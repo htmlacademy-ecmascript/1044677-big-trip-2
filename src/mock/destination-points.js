@@ -5,7 +5,7 @@ export const mockDestinations = [
     name: 'Istanbul',
     pictures: [
       {
-        src: 'http://picsum.photos/300/200?r=0.0762563005163317',
+        src: 'https://loremflickr.com/248/152?random=1',
         description: 'Istanbul parliament building'
       }
     ]
@@ -17,7 +17,12 @@ export const mockDestinations = [
     name: 'Paris',
     pictures: [
       {
-        src: 'http://picsum.photos/300/200?r=0.0762563005163317',
+        src: 'https://loremflickr.com/248/152?random=2',
+        description: 'Paris parliament building'
+      },
+
+      {
+        src: 'https://loremflickr.com/248/152?random=4',
         description: 'Paris parliament building'
       }
     ]
@@ -41,12 +46,9 @@ export const mockDestinations = [
     name: 'Budapesht',
     pictures: [
       {
-        src: 'http://picsum.photos/300/200?r=0.0762563005163317',
+        src: 'https://loremflickr.com/248/152?random=3',
         description: 'Budapesht parliament building'
       }
     ]
   },
-
-
 ];
-
