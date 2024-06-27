@@ -17,19 +17,21 @@ export default class BoardPresenter {
   formEditComponent = new EventEditView();
   eventListComponent = new EventListView();
 
-  constructor({container}) {
+  constructor({container, eventPointsModel}) {
     this.container = container;
+    this.eventPointsModel = eventPointsModel;
   }
 
   init() {
+    this.eventPoints = [...this.eventPointsModel.getPoints()];
     render(this.filterComponent, tripMainElement);
     render(this.sortComponent, this.container);
     render(this.eventListComponent, this.container);
     render(this.formEditComponent,this.eventListComponent.getElement());
     render(this.tripInfoComponent, tripMainElement, RenderPosition.AFTERBEGIN);
 
-    for (let i = 0; i < 3; i++) {
-      render(new EventPointView(), this.eventListComponent.getElement());
+    for (let i = 0; i < this.eventPoints.length; i++) {
+      render(new EventPointView({eventPoint: this.eventPoints[i]}), this.eventListComponent.getElement());
     }
   }
 }
