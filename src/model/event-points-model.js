@@ -8,7 +8,7 @@ export default class EventPointsModel {
   offers = mockOffers;
   destinations = mockDestinations;
 
-  getPoint() {
+  getPoints() {
     return this.points;
   }
 
@@ -16,7 +16,7 @@ export default class EventPointsModel {
     return this.offers;
   }
 
-  getDestination() {
+  getDestinations() {
     return this.destinations;
   }
 
