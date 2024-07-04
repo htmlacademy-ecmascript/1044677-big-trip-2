@@ -34,7 +34,7 @@ export const mockDestinations = [
     name: 'Belgrade',
     pictures: [
       {
-        src: '',
+        src: 'https://loremflickr.com/248/152?random=5',
         description: 'Belgrade parliament building'
       }
     ]

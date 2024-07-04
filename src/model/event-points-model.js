@@ -20,4 +20,18 @@ export default class EventPointsModel {
     return this.destinations;
   }
 
+  getOffersByType(type) {
+    const allOffers = this.getOffers();
+    return allOffers.find((offer) => offer.type === type);
+  }
+
+  getOffersById(type, offersId) {
+    const offersType = this.getOffersByType(type);
+    return offersType.offers.filter((item) => offersId.find((id) => item.id === id));
+  }
+
+  getDestinationById(id) {
+    const allDestinations = this.getDestinations();
+    return allDestinations.find((destination) => destination.id === id);
+  }
 }

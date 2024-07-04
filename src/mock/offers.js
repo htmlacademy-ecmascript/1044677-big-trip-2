@@ -47,6 +47,12 @@ export const mockOffers = [
         id: 'b4c3e4e6-9053-42ce-b747-e281314baa30',
         title: 'Upgrade to a business class',
         price: 120
+      },
+
+      {
+        id: 'b4c3e4e6-9053-42ce-b747-e281314baa50',
+        title: 'Individual meeting at port',
+        price: 300
       }
     ]
   },
