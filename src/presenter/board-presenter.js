@@ -14,22 +14,35 @@ export default class BoardPresenter {
   sortComponent = new SortView();
   filterComponent = new FilterView();
   tripInfoComponent = new TripInfoView();
-  formEditComponent = new EventEditView();
   eventListComponent = new EventListView();
 
-  constructor({container}) {
+  constructor({container, eventPointsModel}) {
     this.container = container;
+    this.eventPointsModel = eventPointsModel;
   }
 
   init() {
+    this.eventPoints = [...this.eventPointsModel.getPoints()];
     render(this.filterComponent, tripMainElement);
     render(this.sortComponent, this.container);
     render(this.eventListComponent, this.container);
-    render(this.formEditComponent,this.eventListComponent.getElement());
     render(this.tripInfoComponent, tripMainElement, RenderPosition.AFTERBEGIN);
 
-    for (let i = 0; i < 3; i++) {
-      render(new EventPointView(), this.eventListComponent.getElement());
+    render(new EventEditView({
+      points: this.eventPoints[0],
+      checkedOffers: this.eventPointsModel.getOffersById(this.eventPoints[0].type, this.eventPoints[0].offers),
+      offers: this.eventPointsModel.getOffersByType(this.eventPoints[0].type),
+      destinations: this.eventPointsModel.getDestinationById(this.eventPoints[0].destination)
+    }), this.eventListComponent.getElement()
+    );
+
+    for (let i = 1; i < this.eventPoints.length; i++) {
+      render(new EventPointView({
+        points: this.eventPoints[i],
+        offers: this.eventPointsModel.getOffersById(this.eventPoints[i].type, this.eventPoints[i].offers),
+        destinations: this.eventPointsModel.getDestinationById(this.eventPoints[i].destination)
+      }),
+      this.eventListComponent.getElement());
     }
   }
 }
