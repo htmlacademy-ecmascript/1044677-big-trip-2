@@ -1,6 +1,6 @@
 import {DATE_FORMAT} from '../const.js';
 import {createElement} from '../render.js';
-import {getTimeGap, humanizeEventDate, humanizeEventTime} from '../utils.js';
+import {getTimeGap, humanizeEventDate} from '../utils.js';
 
 function createOfferTemplate({title, price}) {
   return (
@@ -19,16 +19,16 @@ function createEventPointTemplate(points, offers, destinations) {
   return (`
       <li class="trip-events__item">
         <div class="event">
-          <time class="event__date" datetime=${dateFrom}>${humanizeEventDate(dateFrom, DATE_FORMAT.monthDay)}</time>
+          <time class="event__date" datetime="${dateFrom}">${humanizeEventDate(dateFrom, DATE_FORMAT.monthDay)}</time>
           <div class="event__type">
             <img class="event__type-icon" width="42" height="42" src="img/icons/${type}.png" alt="Event type icon">
           </div>
           <h3 class="event__title">${type} ${name} </h3>
           <div class="event__schedule">
             <p class="event__time">
-              <time class="event__start-time" datetime=${dateFrom}>${humanizeEventTime(dateFrom)}</time>
+              <time class="event__start-time" datetime="${dateFrom}">${humanizeEventDate(dateFrom, DATE_FORMAT.hours)}</time>
               &mdash;
-              <time class="event__end-time" datetime=${dateTo}>${humanizeEventTime(dateTo)}</time>
+              <time class="event__end-time" datetime="${dateTo}">${humanizeEventDate(dateTo, DATE_FORMAT.hours)}</time>
             </p>
             <p class="event__duration">${getTimeGap(dateFrom, dateTo)}</p>
           </div>

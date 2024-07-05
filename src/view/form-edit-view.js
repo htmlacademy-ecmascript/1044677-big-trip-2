@@ -1,6 +1,6 @@
-import {EVENT_POINTS_TYPE} from '../const.js';
+import {DATE_FORMAT, EVENT_POINTS_TYPE} from '../const.js';
 import {createElement} from '../render.js';
-import {humanizeEventFullDate, createUpperCase} from '../utils.js';
+import {humanizeEventDate, createUpperCase} from '../utils.js';
 
 
 function createTypeTemplate(type) {
@@ -111,10 +111,10 @@ function createFormEditTemplate(points, offers, checkedOffers, destinations) {
 
         <div class="event__field-group  event__field-group--time">
           <label class="visually-hidden" for="event-start-time-1">From</label>
-          <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value=${humanizeEventFullDate(dateFrom)}>
+          <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="${humanizeEventDate(dateFrom, DATE_FORMAT.fullDate)}">
           &mdash;
           <label class="visually-hidden" for="event-end-time-1">To</label>
-          <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value=${humanizeEventFullDate(dateTo)}>
+          <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="${humanizeEventDate(dateTo, DATE_FORMAT.fullDate)}">
         </div>
 
         <div class="event__field-group  event__field-group--price">
