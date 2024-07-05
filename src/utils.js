@@ -1,21 +1,29 @@
 import dayjs from 'dayjs';
-import { DATE_FORMAT } from './const';
 
 
-function humanizeEventDate(date) {
-  return (date) ? dayjs(date).format(DATE_FORMAT.monthDay) : '';
-}
-
-function humanizeEventFullDate(date) {
-  return (date) ? dayjs(date).format(DATE_FORMAT.fullDate) : '';
-}
-
-function humanizeEventTime(date) {
-  return (date) ? dayjs(date).format(DATE_FORMAT.hours) : '';
+function humanizeEventDate(date, format) {
+  return (date) ? dayjs(date).format(format) : '';
 }
 
 function getTimeGap(dateFrom, dateTo) {
-  return `${dayjs(dateTo).diff(dateFrom, 'hour')}H`;
+  const durationInMinutes = dayjs(dateTo).diff(dateFrom, 'minute');
+
+  if (durationInMinutes < 60) {
+    return `${durationInMinutes}M`;
+  }
+
+  const durationInHours = dayjs(dateTo).diff(dateFrom, 'hour');
+
+  if (durationInHours < 24) {
+    const durationMinutes = durationInMinutes % 60;
+    return `${durationInHours}H ${durationMinutes}M`;
+  }
+
+  const durationInDays = dayjs(dateTo).diff(dateFrom, 'day');
+  const hours = durationInHours % 24;
+  const minutes = durationInMinutes % 60;
+
+  return `${durationInDays}D ${hours}H ${minutes}M`;
 }
 
 function getRandomArrayElement(items) {
@@ -26,4 +34,4 @@ function createUpperCase(word) {
   return (`${word[0].toUpperCase()}${word.slice(1)}`);
 }
 
-export {getRandomArrayElement, humanizeEventDate, humanizeEventFullDate, humanizeEventTime, getTimeGap, createUpperCase};
+export {getRandomArrayElement, humanizeEventDate, getTimeGap, createUpperCase};
