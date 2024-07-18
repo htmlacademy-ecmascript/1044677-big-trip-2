@@ -1,5 +1,5 @@
 import {DATE_FORMAT, EVENT_POINTS_TYPE} from '../const.js';
-import {createElement} from '../render.js';
+import AbstractView from '../framework/view/abstract-view.js';
 import {humanizeEventDate, createUpperCase} from '../utils.js';
 
 
@@ -139,27 +139,21 @@ function createFormEditTemplate(points, offers, checkedOffers, destinations) {
   );
 }
 
-export default class EventEditView {
+export default class EventEditView extends AbstractView {
+  #points = null;
+  #offers = null;
+  #checkedOffers = null;
+  #destinations = null;
+
   constructor({points, offers, checkedOffers, destinations}) {
-    this.points = points;
-    this.offers = offers;
-    this.checkedOffers = checkedOffers;
-    this.destinations = destinations;
+    super();
+    this.#points = points;
+    this.#offers = offers;
+    this.#checkedOffers = checkedOffers;
+    this.#destinations = destinations;
   }
 
-  getTemplate() {
-    return createFormEditTemplate(this.points, this.offers, this.checkedOffers, this.destinations);
-  }
-
-  getElement() {
-    if (!this.element) {
-      this.element = createElement(this.getTemplate());
-    }
-
-    return this.element;
-  }
-
-  removeElement() {
-    this.element = null;
+  get template() {
+    return createFormEditTemplate(this.#points, this.#offers, this.#checkedOffers, this.#destinations);
   }
 }
