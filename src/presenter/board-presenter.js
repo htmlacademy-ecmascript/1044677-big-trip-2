@@ -32,21 +32,26 @@ export default class BoardPresenter {
     render(this.#eventListComponent, this.#container);
     render(this.#tripInfoComponent, tripMainElement, RenderPosition.AFTERBEGIN);
 
-    render(new EventEditView({
-      points: this.#eventPoints[0],
-      checkedOffers: this.#eventPointsModel.getOffersById(this.#eventPoints[0].type, this.#eventPoints[0].offers),
-      offers: this.#eventPointsModel.getOffersByType(this.#eventPoints[0].type),
-      destinations: this.#eventPointsModel.getDestinationById(this.#eventPoints[0].destination)
-    }), this.#eventListComponent.element
-    );
+    // render(new EventEditView({
+    //   points: this.#eventPoints[0],
+    //   checkedOffers: this.#eventPointsModel.getOffersById(this.#eventPoints[0].type, this.#eventPoints[0].offers),
+    //   offers: this.#eventPointsModel.getOffersByType(this.#eventPoints[0].type),
+    //   destinations: this.#eventPointsModel.getDestinationById(this.#eventPoints[0].destination)
+    // }), this.#eventListComponent.element
+    // );
 
     for (let i = 1; i < this.#eventPoints.length; i++) {
-      render(new EventPointView({
-        points: this.#eventPoints[i],
-        offers: this.#eventPointsModel.getOffersById(this.#eventPoints[i].type, this.#eventPoints[i].offers),
-        destinations: this.#eventPointsModel.getDestinationById(this.#eventPoints[i].destination)
-      }), this.#eventListComponent.element
+      this.#renderEventPoint(
+        this.#eventPoints[i],
+        this.#eventPointsModel.getOffersById(this.#eventPoints[i].type, this.#eventPoints[i].offers),
+        this.#eventPointsModel.getDestinationById(this.#eventPoints[i].destination)
       );
     }
+  }
+
+  #renderEventPoint(points, offers, destinations) {
+    const eventPointComponent = new EventPointView({points, offers, destinations});
+
+    render(eventPointComponent, this.#eventListComponent.element);
   }
 }
