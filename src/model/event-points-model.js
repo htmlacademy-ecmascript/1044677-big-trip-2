@@ -21,7 +21,7 @@ export default class EventPointsModel {
   }
 
   getOffersByType(type) {
-    const allOffers = this.#offers;
+    const allOffers = this.offers;
     return allOffers.find((offer) => offer.type === type);
   }
 
@@ -31,7 +31,7 @@ export default class EventPointsModel {
   }
 
   getDestinationById(id) {
-    const allDestinations = this.#destinations;
+    const allDestinations = this.destinations;
     return allDestinations.find((destination) => destination.id === id);
   }
 }
