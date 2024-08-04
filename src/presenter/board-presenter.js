@@ -4,8 +4,7 @@ import SortView from '../view/sort-view.js';
 import EventPointView from '../view/event-point-view.js';
 import EventEditView from '../view/form-edit-view.js';
 import TripInfoView from '../view/trip-info-view.js';
-import {render, replace} from '../framework/render.js';
-import {RenderPosition} from '../framework/render.js';
+import {render, replace, RenderPosition} from '../framework/render.js';
 import EventCreateView from '../view/form-create-view.js';
 import NewEventButtonView from '../view/new-event-button-view.js';
 
@@ -15,7 +14,7 @@ const tripMainElement = siteHeaderElement.querySelector('.trip-main');
 export default class BoardPresenter {
   #container = null;
   #eventPointsModel = null;
-  #newEventButtonComponent = null;
+  #newEventButtonComponent = null; //разобраться с отрисовкой кнопки
 
   #sortComponent = new SortView();
   #filterComponent = new FilterView();
@@ -37,16 +36,11 @@ export default class BoardPresenter {
     render(this.#eventListComponent, this.#container);
     render(this.#tripInfoComponent, tripMainElement, RenderPosition.AFTERBEGIN);
 
-    // this.#renderEventEditForm(
-    //   this.#eventPoints[0],
-    //   this.#eventPointsModel.getOffersById(this.#eventPoints[0].type, this.#eventPoints[0].offers),
-    //   this.#eventPointsModel.getOffersByType(this.#eventPoints[0].type),
-    //   this.#eventPointsModel.getDestinationById(this.#eventPoints[0].destination)
-    // );
 
     for (let i = 1; i < this.#eventPoints.length; i++) {
       this.#renderEventPoint(
         this.#eventPoints[i],
+        this.#eventPointsModel.getOffersByType(this.#eventPoints[i].type),
         this.#eventPointsModel.getOffersById(this.#eventPoints[i].type, this.#eventPoints[i].offers),
         this.#eventPointsModel.getDestinationById(this.#eventPoints[i].destination)
       );
@@ -57,7 +51,7 @@ export default class BoardPresenter {
     });
   }
 
-  #renderEventPoint(points, offers, destinations) {
+  #renderEventPoint(point) {
     const escKeyDownHandler = (evt) => {
       if (evt.key === 'Escape') {
         evt.preventDefault();
@@ -66,15 +60,26 @@ export default class BoardPresenter {
       }
     };
     const eventPointComponent = new EventPointView({
-      points, offers, destinations,
+      points: point,
+      offers: [...this.#eventPointsModel.getOffersById(point.type, point.offers)],
+      destinations: this.#eventPointsModel.getDestinationById(point.destination),
       onEditClick: () => {
+        console.log('chlen');
         replacePointToForm();
         document.addEventListener('keydown', escKeyDownHandler);
       }
     });
     const eventEditFormComponent = new EventEditView({
-      points, checkedOffers, offers, destinations,
+      points: point,
+      offers: this.#eventPointsModel.getOffersByType(point.type),
+      checkedOffers: [...this.#eventPointsModel.getOffersById(point.type, point.offers)],
+      destinations: this.#eventPointsModel.getDestinationById(point.destination),
       onFormSubmit: () => {
+        replaceFormToPoint();
+        document.removeEventListener('keydown', escKeyDownHandler);
+      },
+      onEditClick: () => {
+        console.log('hui');
         replaceFormToPoint();
         document.removeEventListener('keydown', escKeyDownHandler);
       }
@@ -90,12 +95,6 @@ export default class BoardPresenter {
 
     render(eventPointComponent, this.#eventListComponent.element);
   }
-
-  // #renderEventEditForm(points, checkedOffers, offers, destinations) {
-  //   const eventEditFormComponent = new EventEditView({points, checkedOffers, offers, destinations});
-
-  //   render(eventEditFormComponent, this.#eventListComponent.element);
-  // }
 
   #handleNewEventButtonClick = () => {
     render(this.#eventCreateComponent, this.#eventListComponent.element);

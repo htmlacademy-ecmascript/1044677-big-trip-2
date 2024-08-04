@@ -145,17 +145,21 @@ export default class EventEditView extends AbstractView {
   #checkedOffers = null;
   #destinations = null;
   #handleFormSubmit = null;
+  #handleEditClick = null;
 
-  constructor({points, offers, checkedOffers, destinations, onFormSubmit}) {
+  constructor({points, offers, checkedOffers, destinations, onFormSubmit, onEditClick}) {
     super();
     this.#points = points;
     this.#offers = offers;
     this.#checkedOffers = checkedOffers;
     this.#destinations = destinations;
     this.#handleFormSubmit = onFormSubmit;
+    this.#handleEditClick = onEditClick;
 
-    this.element.querySelector('.event__save-btn') //надо заменить на form, но выдаёт ошибку
-      .addEventListener('submit', this.#formSubmitHandler);
+    this.element.querySelector('.event__rollup-btn')
+      .addEventListener('click', this.#editClickHandler);
+
+    this.element.addEventListener('submit', this.#formSubmitHandler);
   }
 
   get template() {
@@ -165,5 +169,10 @@ export default class EventEditView extends AbstractView {
   #formSubmitHandler = (evt) => {
     evt.preventDefault();
     this.#handleFormSubmit();
+  };
+
+  #editClickHandler = (evt) => {
+    evt.preventDefault();
+    this.#handleEditClick();
   };
 }
