@@ -64,7 +64,6 @@ export default class BoardPresenter {
       offers: [...this.#eventPointsModel.getOffersById(point.type, point.offers)],
       destinations: this.#eventPointsModel.getDestinationById(point.destination),
       onEditClick: () => {
-        console.log('chlen');
         replacePointToForm();
         document.addEventListener('keydown', escKeyDownHandler);
       }
@@ -79,7 +78,6 @@ export default class BoardPresenter {
         document.removeEventListener('keydown', escKeyDownHandler);
       },
       onEditClick: () => {
-        console.log('hui');
         replaceFormToPoint();
         document.removeEventListener('keydown', escKeyDownHandler);
       }
