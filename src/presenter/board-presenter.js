@@ -61,7 +61,7 @@ export default class BoardPresenter {
     };
     const eventPointComponent = new EventPointView({
       points: point,
-      offers: [...this.#eventPointsModel.getOffersById(point.type, point.offers)],
+      offers: this.#eventPointsModel.getOffersById(point.type, point.offers),
       destinations: this.#eventPointsModel.getDestinationById(point.destination),
       onEditClick: () => {
         replacePointToForm();
@@ -71,7 +71,7 @@ export default class BoardPresenter {
     const eventEditFormComponent = new EventEditView({
       points: point,
       offers: this.#eventPointsModel.getOffersByType(point.type),
-      checkedOffers: [...this.#eventPointsModel.getOffersById(point.type, point.offers)],
+      checkedOffers: this.#eventPointsModel.getOffersById(point.type, point.offers),
       destinations: this.#eventPointsModel.getDestinationById(point.destination),
       onFormSubmit: () => {
         replaceFormToPoint();
