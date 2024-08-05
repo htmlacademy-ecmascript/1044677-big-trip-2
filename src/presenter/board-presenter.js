@@ -60,7 +60,7 @@ export default class BoardPresenter {
       }
     };
     const eventPointComponent = new EventPointView({
-      points: point,
+      point: point,
       offers: this.#eventPointsModel.getOffersById(point.type, point.offers),
       destinations: this.#eventPointsModel.getDestinationById(point.destination),
       onEditClick: () => {
@@ -69,7 +69,7 @@ export default class BoardPresenter {
       }
     });
     const eventEditFormComponent = new EventEditView({
-      points: point,
+      point: point,
       offers: this.#eventPointsModel.getOffersByType(point.type),
       checkedOffers: this.#eventPointsModel.getOffersById(point.type, point.offers),
       destinations: this.#eventPointsModel.getDestinationById(point.destination),

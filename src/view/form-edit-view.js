@@ -140,7 +140,7 @@ function createFormEditTemplate(points, offers, checkedOffers, destinations) {
 }
 
 export default class EventEditView extends AbstractView {
-  #points = null;
+  #point = null;
   #offers = null;
   #checkedOffers = null;
   #destinations = null;
@@ -149,7 +149,7 @@ export default class EventEditView extends AbstractView {
 
   constructor({points, offers, checkedOffers, destinations, onFormSubmit, onEditClick}) {
     super();
-    this.#points = points;
+    this.#point = points;
     this.#offers = offers;
     this.#checkedOffers = checkedOffers;
     this.#destinations = destinations;
@@ -163,7 +163,7 @@ export default class EventEditView extends AbstractView {
   }
 
   get template() {
-    return createFormEditTemplate(this.#points, this.#offers, this.#checkedOffers, this.#destinations);
+    return createFormEditTemplate(this.#point, this.#offers, this.#checkedOffers, this.#destinations);
   }
 
   #formSubmitHandler = (evt) => {
