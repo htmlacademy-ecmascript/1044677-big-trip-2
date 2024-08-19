@@ -1,4 +1,6 @@
 import dayjs from 'dayjs';
+import { NoEventsMessage } from './const.js';
+import { FilterType } from './const.js';
 
 
 function humanizeEventDate(date, format) {
@@ -32,6 +34,28 @@ function getRandomArrayElement(items) {
 
 function createUpperCase(word) {
   return (`${word[0].toUpperCase()}${word.slice(1)}`);
+}
+
+export function filterEventPoints(points) {
+  const now = dayjs();
+  const filteredPoints = {
+    EVERYTHING: points,
+    FUTURE: points.filter((point) => dayjs(point.dateFrom).isAfter(now)),
+    PRESENT: points.filter((point) => dayjs(point.dateFrom).isBefore(now) && dayjs(point.dateTo).isAfter(now)),
+    PAST: points.filter((point) => dayjs(point.dateTo).isBefore(now))
+  };
+
+  const result = Object.entries(filteredPoints).map(
+    ([filterType]) => {
+      const count = filteredPoints[filterType].length;
+      return {
+        type: FilterType[filterType],
+        count: count,
+        placeholder: count === 0 ? NoEventsMessage[FilterType[filterType]] : null
+      };
+    });
+
+  return result;
 }
 
 export {getRandomArrayElement, humanizeEventDate, getTimeGap, createUpperCase};

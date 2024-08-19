@@ -5,7 +5,10 @@ import EventPointView from '../view/event-point-view.js';
 import EventEditView from '../view/form-edit-view.js';
 import TripInfoView from '../view/trip-info-view.js';
 import {render, replace, RenderPosition} from '../framework/render.js';
-import EventCreateView from '../view/form-create-view.js';
+// import EventCreateView from '../view/form-create-view.js';
+import NoEventPointsView from '../view/no-event-points-view.js';
+import { filterEventPoints } from '../utils.js';
+// import NewEventButtonView from '../view/new-event-button-view.js';
 
 const siteHeaderElement = document.querySelector('.page-header');
 const tripMainElement = siteHeaderElement.querySelector('.trip-main');
@@ -15,10 +18,12 @@ export default class BoardPresenter {
   #eventPointsModel = null;
 
   #sortComponent = new SortView();
-  #filterComponent = new FilterView();
+  // #filterComponent = new FilterView();
   #tripInfoComponent = new TripInfoView();
   #eventListComponent = new EventListView();
-  #eventCreateComponent = new EventCreateView();
+  // #noEventsComponent = new NoEventPointsView();
+  // #eventCreateComponent = new EventCreateView();
+  // #newEventButtonComponent = new NewEventButtonView();
 
   #eventPoints = [];
   constructor({container, eventPointsModel}) {
@@ -53,6 +58,7 @@ export default class BoardPresenter {
       offers: this.#eventPointsModel.getOffersByType(point.type),
       checkedOffers: this.#eventPointsModel.getOffersById(point.type, point.offers),
       destinations: this.#eventPointsModel.getDestinationById(point.destination),
+      destinationsAll: this.#eventPointsModel.destinations,
       onFormSubmit: () => {
         replaceFormToPoint();
         document.removeEventListener('keydown', escKeyDownHandler);
@@ -75,10 +81,17 @@ export default class BoardPresenter {
   }
 
   #renderBoard() {
-    render(this.#filterComponent, tripMainElement);
+    const filters = filterEventPoints(this.#eventPointsModel.points);
     render(this.#sortComponent, this.#container);
     render(this.#eventListComponent, this.#container);
     render(this.#tripInfoComponent, tripMainElement, RenderPosition.AFTERBEGIN);
+    // render(this.#eventCreateComponent, this.#container);
+    // render(this.#newEventButtonComponent, tripMainElement);
+    render(new FilterView({filters}),tripMainElement);
+
+    if(this.#eventPoints.length === 0) {
+      render(new NoEventPointsView(), this.#container);
+    }
 
 
     for (let i = 1; i < this.#eventPoints.length; i++) {

@@ -74,7 +74,6 @@ function createDestinationTemplate(destination) {
       </section>`
     );
   }
-
 }
 
 function createFormEditTemplate(points, offers, checkedOffers, destinations) {

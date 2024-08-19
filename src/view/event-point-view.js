@@ -12,10 +12,9 @@ function createOfferTemplate({title, price}) {
   );
 }
 
-function createEventPointTemplate(point, offers, destinations) {
-  console.log(point);
+function createEventPointTemplate(point, offers, destination) {
   const {type, dateFrom, dateTo, isFavorite, basePrice} = point;
-  const {name} = destinations;
+  const {name} = destination;
 
   return (`
       <li class="trip-events__item">

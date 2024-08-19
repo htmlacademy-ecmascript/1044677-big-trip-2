@@ -1,4 +1,4 @@
-export const EVENT_POINTS_COUNT = 10;
+export const EVENT_POINTS_COUNT = 0;
 export const DATE_FORMAT = {
   monthDay: 'MMM D',
   fullDate: 'DD/MM/YY HH:mm',
@@ -16,3 +16,17 @@ export const EVENT_POINTS_TYPE = [
   'sightseeing',
   'restaurant'
 ];
+
+export const FilterType = {
+  EVERYTHING: 'everything',
+  PAST: 'past',
+  PRESENT: 'present',
+  FUTURE: 'future'
+};
+
+export const NoEventsMessage = {
+  [FilterType.EVERYTHING]: 'Click New Event to create your first point',
+  [FilterType.PAST]: 'There are no past events now',
+  [FilterType.PRESENT]: 'There are no present events now',
+  [FilterType.FUTURE]: 'There are no future events now'
+};
