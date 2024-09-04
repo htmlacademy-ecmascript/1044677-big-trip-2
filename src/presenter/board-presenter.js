@@ -5,11 +5,8 @@ import EventPointView from '../view/event-point-view.js';
 import EventEditView from '../view/form-edit-view.js';
 import TripInfoView from '../view/trip-info-view.js';
 import {render, replace, RenderPosition} from '../framework/render.js';
-// import EventCreateView from '../view/form-create-view.js';
 import NoEventPointsView from '../view/no-event-points-view.js';
 import { filterEventPoints } from '../utils.js';
-// import FilterModel from '../model/filters-model.js';
-// import NewEventButtonView from '../view/new-event-button-view.js';
 
 const siteHeaderElement = document.querySelector('.page-header');
 const tripMainElement = siteHeaderElement.querySelector('.trip-main');
@@ -20,12 +17,8 @@ export default class BoardPresenter {
   #filterModel = null;
 
   #sortComponent = new SortView();
-  // #filterComponent = new FilterView();
   #tripInfoComponent = new TripInfoView();
   #eventListComponent = new EventListView();
-  // #noEventsComponent = new NoEventPointsView();
-  // #eventCreateComponent = new EventCreateView();
-  // #newEventButtonComponent = new NewEventButtonView();
 
   #eventPoints = [];
   constructor({container, eventPointsModel, filterModel}) {
@@ -88,8 +81,6 @@ export default class BoardPresenter {
     render(this.#sortComponent, this.#container);
     render(this.#eventListComponent, this.#container);
     render(this.#tripInfoComponent, tripMainElement, RenderPosition.AFTERBEGIN);
-    // render(this.#eventCreateComponent, this.#container);
-    // render(this.#newEventButtonComponent, tripMainElement);
     render(new FilterView(filters,this.#filterModel),tripMainElement);
 
     if(this.#eventPoints.length === 0) {

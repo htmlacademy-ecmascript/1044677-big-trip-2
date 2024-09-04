@@ -54,7 +54,6 @@ export function filterEventPoints(points) {
         placeholder: count === 0 ? NoEventsMessage[FilterType[filterType]] : null
       };
     });
-    // console.log(result);
   return result;
 }
 

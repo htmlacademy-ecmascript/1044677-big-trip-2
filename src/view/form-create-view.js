@@ -11,8 +11,8 @@ function createTypeTemplate(type) {
   );
 }
 
-function createOfferTemplate(offers) {
-  const {id, title, price} = offers;
+function createOfferTemplate(offer) {
+  const {id, title, price} = offer;
   return (
     `<div class="event__offer-selector">
       <input class="event__offer-checkbox  visually-hidden" id=${id} type="checkbox" name=${id}>
@@ -73,9 +73,9 @@ function createDestinationTemplate(destination) {
   }
 }
 
-function createNewEventTemplate(points, offers, destinations) {
+function createNewEventTemplate(points, offers, destination) {
   const {type, dateFrom, dateTo, basePrice} = points;
-  const {name} = destinations;
+  const {name} = destination;
   return (`
     <form class="event event--edit" action="#" method="post">
       <header class="event__header">
@@ -100,7 +100,7 @@ function createNewEventTemplate(points, offers, destinations) {
           </label>
           <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${name}" list="destination-list-1">
           <datalist id="destination-list-1">
-          ${destinations}
+          ${destination}
           </datalist>
         </div>
 
@@ -125,7 +125,7 @@ function createNewEventTemplate(points, offers, destinations) {
       </header>
       <section class="event__details">
         ${createOffersListTemplate(offers)}
-        ${createDestinationTemplate(destinations)}
+        ${createDestinationTemplate(destination)}
       </section>
     </form>`
   );

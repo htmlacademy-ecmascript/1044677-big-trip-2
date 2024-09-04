@@ -5,7 +5,6 @@ import { FilterType } from '../const.js';
 function createNoEventPointsTemplate(currentFilter) {
   const filterKey = FilterType[currentFilter];
   const noEventsTextValue = NoEventsMessage[filterKey];
-  // console.log(currentFilter);
   return (
     `<p class="trip-events__msg">${noEventsTextValue}</p>`
   );
