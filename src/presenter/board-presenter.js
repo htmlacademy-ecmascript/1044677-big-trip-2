@@ -91,7 +91,6 @@ export default class BoardPresenter {
     // render(this.#eventCreateComponent, this.#container);
     // render(this.#newEventButtonComponent, tripMainElement);
     render(new FilterView(filters,this.#filterModel),tripMainElement);
-    // console.log(this.#filterModel);
 
     if(this.#eventPoints.length === 0) {
       render(new NoEventPointsView(this.#filterModel), this.#container);
