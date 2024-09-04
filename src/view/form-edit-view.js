@@ -146,7 +146,7 @@ export default class EventEditView extends AbstractView {
   #handleFormSubmit = null;
   #handleEditClick = null;
 
-  constructor({point, offers, checkedOffers, destinations, onFormSubmit, onEditClick}) {
+  constructor({point, offers, checkedOffers, destinations, onFormSubmit,onEditClick}) {
     super();
     this.#point = point;
     this.#offers = offers;

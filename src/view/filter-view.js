@@ -1,7 +1,6 @@
 import AbstractView from '../framework/view/abstract-view.js';
 
 function createFilterTemplate(filter, currentFilterType) {
-  console.log(filter);
   const {type, count} = filter;
 
   return (
@@ -36,15 +35,31 @@ function createFiltersTemplate(filters, currentFilterType) {
 
 export default class FilterView extends AbstractView {
   #filters = null;
-  #currentFilter = null;
+  #filterModel = null;
+  #currentFilterType = null;
 
-  constructor({filters, currentFilterType}) {
+  constructor(filters, filterModel) {
     super();
     this.#filters = filters;
-    this.#currentFilter = currentFilterType;
+    this.#filterModel = filterModel;
+    this.#currentFilterType = filterModel.getCurrentFilter();
+    this.#setInnerHandlers();
   }
 
   get template() {
-    return createFiltersTemplate(this.#filters, this.#currentFilter);
+    return createFiltersTemplate(this.#filters, this.#currentFilterType);
   }
+
+  #setInnerHandlers() {
+    this.element.querySelectorAll('.trip-filters__filter-input')
+      .forEach((filterInput) => {
+        filterInput.addEventListener('click', this.#filterClickHandler);
+      });
+  }
+
+  #filterClickHandler = (evt) => {
+    evt.preventDefault();
+    this.#filterModel.setCurrentFilter(evt.target.value);
+
+  };
 }
