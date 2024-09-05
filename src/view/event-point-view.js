@@ -12,9 +12,9 @@ function createOfferTemplate({title, price}) {
   );
 }
 
-function createEventPointTemplate(points, offers, destinations) {
-  const {type, dateFrom, dateTo, isFavorite, basePrice} = points;
-  const {name} = destinations;
+function createEventPointTemplate(point, offers, destination) {
+  const {type, dateFrom, dateTo, isFavorite, basePrice} = point;
+  const {name} = destination;
 
   return (`
       <li class="trip-events__item">
@@ -54,14 +54,14 @@ function createEventPointTemplate(points, offers, destinations) {
 }
 
 export default class EventPointView extends AbstractView {
-  #points = null;
+  #point = null;
   #offers = null;
   #destinations = null;
   #handleEditClick = null;
 
-  constructor({points, offers, destinations, onEditClick}) {
+  constructor({point, offers, destinations, onEditClick}) {
     super();
-    this.#points = points;
+    this.#point = point;
     this.#offers = offers;
     this.#destinations = destinations;
     this.#handleEditClick = onEditClick;
@@ -71,7 +71,7 @@ export default class EventPointView extends AbstractView {
   }
 
   get template() {
-    return createEventPointTemplate(this.#points, this.#offers, this.#destinations);
+    return createEventPointTemplate(this.#point, this.#offers, this.#destinations);
   }
 
   #editClickHandler = (evt) => {

@@ -12,9 +12,9 @@ function createTypeTemplate(type) {
   );
 }
 
-function createOfferTemplate(offers, checkedOffers) {
-  const {id, title, price} = offers;
-  const isChecked = checkedOffers.map((item) => item.id).includes(id) ? 'checked' : '';
+function createOfferTemplate(offer, checkedOffer) {
+  const {id, title, price} = offer;
+  const isChecked = checkedOffer.map((item) => item.id).includes(id) ? 'checked' : '';
   return (
     `<div class="event__offer-selector">
       <input class="event__offer-checkbox  visually-hidden" id=${id} type="checkbox" name=${id} ${isChecked}>
@@ -74,7 +74,6 @@ function createDestinationTemplate(destination) {
       </section>`
     );
   }
-
 }
 
 function createFormEditTemplate(points, offers, checkedOffers, destinations) {
@@ -147,9 +146,9 @@ export default class EventEditView extends AbstractView {
   #handleFormSubmit = null;
   #handleEditClick = null;
 
-  constructor({points, offers, checkedOffers, destinations, onFormSubmit, onEditClick}) {
+  constructor({point, offers, checkedOffers, destinations, onFormSubmit,onEditClick}) {
     super();
-    this.#point = points;
+    this.#point = point;
     this.#offers = offers;
     this.#checkedOffers = checkedOffers;
     this.#destinations = destinations;
