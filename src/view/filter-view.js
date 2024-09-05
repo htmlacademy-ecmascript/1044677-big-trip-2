@@ -42,7 +42,7 @@ export default class FilterView extends AbstractView {
     super();
     this.#filters = filters;
     this.#filterModel = filterModel;
-    this.#currentFilterType = filterModel.getCurrentFilter();
+    this.#currentFilterType = filterModel.getCurrentFilter;
     this.#setInnerHandlers();
   }
 
@@ -59,7 +59,7 @@ export default class FilterView extends AbstractView {
 
   #filterClickHandler = (evt) => {
     evt.preventDefault();
-    this.#filterModel.setCurrentFilter(evt.target.value);
+    this.#filterModel.setCurrentFilter = evt.target.value;
 
   };
 }
