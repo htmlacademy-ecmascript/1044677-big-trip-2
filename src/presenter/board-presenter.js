@@ -1,12 +1,11 @@
 import FilterView from '../view/filter-view.js';
 import EventListView from '../view/event-list-view.js';
 import SortView from '../view/sort-view.js';
-import EventPointView from '../view/event-point-view.js';
-import EventEditView from '../view/form-edit-view.js';
 import TripInfoView from '../view/trip-info-view.js';
-import {render, replace, RenderPosition} from '../framework/render.js';
 import NoEventPointsView from '../view/no-event-points-view.js';
+import { render, RenderPosition } from '../framework/render.js';
 import { filterEventPoints } from '../utils.js';
+import EventPointPresenter from './event-point-presenter.js';
 
 const siteHeaderElement = document.querySelector('.page-header');
 const tripMainElement = siteHeaderElement.querySelector('.trip-main');
@@ -29,65 +28,48 @@ export default class BoardPresenter {
 
   init() {
     this.#eventPoints = [...this.#eventPointsModel.points];
+    this.#renderTripInfo();
+    this.#renderSort();
+    this.#renderFilter();
+    this.#renderEventsList();
     this.#renderBoard();
+    this.#renderNoEvents();
   }
 
   #renderEventPoint(point) {
-    const escKeyDownHandler = (evt) => {
-      if (evt.key === 'Escape') {
-        evt.preventDefault();
-        replaceFormToPoint();
-        document.removeEventListener('keydown', escKeyDownHandler);
-      }
-    };
-    const eventPointComponent = new EventPointView({
-      point: point,
-      offers: this.#eventPointsModel.getOffersById(point.type, point.offers),
-      destinations: this.#eventPointsModel.getDestinationById(point.destination),
-      onEditClick: () => {
-        replacePointToForm();
-        document.addEventListener('keydown', escKeyDownHandler);
-      }
-    });
-    const eventEditFormComponent = new EventEditView({
-      point: point,
-      offers: this.#eventPointsModel.getOffersByType(point.type),
-      checkedOffers: this.#eventPointsModel.getOffersById(point.type, point.offers),
-      destinations: this.#eventPointsModel.getDestinationById(point.destination),
-      destinationsAll: this.#eventPointsModel.destinations,
-      onFormSubmit: () => {
-        replaceFormToPoint();
-        document.removeEventListener('keydown', escKeyDownHandler);
-      },
-      onEditClick: () => {
-        replaceFormToPoint();
-        document.removeEventListener('keydown', escKeyDownHandler);
-      }
+    const eventPointPresenter = new EventPointPresenter({
+      container: this.#eventListComponent.element,
+      eventPointsModel: this.#eventPointsModel,
+      filterModel: this.#filterModel
     });
 
-    function replacePointToForm() {
-      replace(eventEditFormComponent, eventPointComponent);
-    }
-
-    function replaceFormToPoint() {
-      replace(eventPointComponent, eventEditFormComponent);
-    }
-
-    render(eventPointComponent, this.#eventListComponent.element);
+    eventPointPresenter.init(point);
   }
 
-  #renderBoard() {
-    const filters = filterEventPoints(this.#eventPointsModel.points);
-    render(this.#sortComponent, this.#container);
-    render(this.#eventListComponent, this.#container);
+  #renderTripInfo() {
     render(this.#tripInfoComponent, tripMainElement, RenderPosition.AFTERBEGIN);
-    render(new FilterView(filters,this.#filterModel),tripMainElement);
+  }
 
+  #renderSort() {
+    render(this.#sortComponent, this.#container);
+  }
+
+  #renderFilter() {
+    const filters = filterEventPoints(this.#eventPointsModel.points);
+    render(new FilterView(filters,this.#filterModel),tripMainElement);
+  }
+
+  #renderEventsList() {
+    render(this.#eventListComponent, this.#container);
+  }
+
+  #renderNoEvents() {
     if(this.#eventPoints.length === 0) {
       render(new NoEventPointsView(this.#filterModel), this.#container);
     }
+  }
 
-
+  #renderBoard() {
     for (let i = 1; i < this.#eventPoints.length; i++) {
       this.#renderEventPoint(
         this.#eventPoints[i],

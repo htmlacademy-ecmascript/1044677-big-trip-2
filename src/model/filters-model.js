@@ -1,11 +1,11 @@
 export default class FilterModel {
   #currentFilter = 'EVERYTHING';
 
-  get сurrentFilter() {
+  get currentFilter() {
     return this.#currentFilter;
   }
 
-  set сurrentFilter(filter) {
+  set currentFilter(filter) {
     this.#currentFilter = filter;
   }
 }
