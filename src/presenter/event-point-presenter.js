@@ -5,12 +5,10 @@ import { render, replace } from '../framework/render.js';
 export default class EventPointPresenter {
   #container = null;
   #eventPointsModel = null;
-  #filterModel = null;
 
-  constructor({container, eventPointsModel, filterModel}) {
+  constructor({container, eventPointsModel}) {
     this.#container = container;
     this.#eventPointsModel = eventPointsModel;
-    this.#filterModel = filterModel;
   }
 
   init(point) {
