@@ -42,7 +42,8 @@ export default class BoardPresenter {
       container: this.#eventListComponent.element,
       eventPointsModel: this.#eventPointsModel,
       filterModel: this.#filterModel,
-      onDataChange: this.#handleEventPointChange
+      onDataChange: this.#handleEventPointChange,
+      onModeChange: this.#handleModeChange
     });
 
     eventPointPresenter.init(point);
@@ -56,6 +57,10 @@ export default class BoardPresenter {
   #renderSort() {
     render(this.#sortComponent, this.#container);
   }
+
+  #handleModeChange = () => {
+    this.#eventPointsPresenters.forEach((presenter) => presenter.resetView());
+  };
 
   #handleEventPointChange = (updatedPoint) => {
     this.#eventPoints = updatePoint(this.#eventPoints, updatedPoint);
