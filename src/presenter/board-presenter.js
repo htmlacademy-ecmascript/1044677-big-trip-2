@@ -88,7 +88,7 @@ export default class BoardPresenter {
   }
 
   #renderBoard() {
-    for (let i = 1; i < this.#eventPoints.length; i++) {
+    for (let i = 0; i < this.#eventPoints.length; i++) {
       this.#renderEventPoint(
         this.#eventPoints[i],
         this.#eventPointsModel.getOffersByType(this.#eventPoints[i].type),
