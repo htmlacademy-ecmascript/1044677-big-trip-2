@@ -5,6 +5,7 @@ import TripInfoView from '../view/trip-info-view.js';
 import NoEventPointsView from '../view/no-event-points-view.js';
 import { render, RenderPosition } from '../framework/render.js';
 import { filterEventPoints } from '../utils.js';
+import { updatePoint } from '../utils.js';
 import EventPointPresenter from './event-point-presenter.js';
 
 const siteHeaderElement = document.querySelector('.page-header');
@@ -18,7 +19,7 @@ export default class BoardPresenter {
   #sortComponent = new SortView();
   #tripInfoComponent = new TripInfoView();
   #eventListComponent = new EventListView();
-
+  #eventPointsPresenters = new Map();
   #eventPoints = [];
   constructor({container, eventPointsModel, filterModel}) {
     this.#container = container;
@@ -40,10 +41,12 @@ export default class BoardPresenter {
     const eventPointPresenter = new EventPointPresenter({
       container: this.#eventListComponent.element,
       eventPointsModel: this.#eventPointsModel,
-      filterModel: this.#filterModel
+      filterModel: this.#filterModel,
+      onDataChange: this.#handleEventPointChange
     });
 
     eventPointPresenter.init(point);
+    this.#eventPointsPresenters.set(point.id, eventPointPresenter);
   }
 
   #renderTripInfo() {
@@ -54,6 +57,11 @@ export default class BoardPresenter {
     render(this.#sortComponent, this.#container);
   }
 
+  #handleEventPointChange = (updatedPoint) => {
+    this.#eventPoints = updatePoint(this.#eventPoints, updatedPoint);
+    this.#eventPointsPresenters.get(updatedPoint.id).init(updatedPoint);
+  };
+
   #renderFilter() {
     const filters = filterEventPoints(this.#eventPointsModel.points);
     render(new FilterView(filters,this.#filterModel),tripMainElement);
@@ -61,6 +69,11 @@ export default class BoardPresenter {
 
   #renderEventsList() {
     render(this.#eventListComponent, this.#container);
+  }
+
+  #clearEventPointsList() {
+    this.#eventPointsPresenters.forEach((presenter) => presenter.destroy());
+    this.#eventPointsPresenters.clear();
   }
 
   #renderNoEvents() {

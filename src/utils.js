@@ -36,6 +36,10 @@ function createUpperCase(word) {
   return (`${word[0].toUpperCase()}${word.slice(1)}`);
 }
 
+function updatePoint(points, update) {
+  return points.map((point) => point.id === update.id ? update : point);
+}
+
 export function filterEventPoints(points) {
   const now = dayjs();
   const filteredPoints = {
@@ -57,4 +61,4 @@ export function filterEventPoints(points) {
   return result;
 }
 
-export {getRandomArrayElement, humanizeEventDate, getTimeGap, createUpperCase};
+export { getRandomArrayElement, humanizeEventDate, getTimeGap, createUpperCase, updatePoint };

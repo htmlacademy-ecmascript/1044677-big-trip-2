@@ -48,7 +48,7 @@ export const mockEventPoints = [
     isFavorite: true,
     offers: [],
     type: 'restaurant'
-  }
+  },
 ];
 
 function getRandomEventPoint () {

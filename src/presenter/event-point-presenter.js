@@ -7,13 +7,17 @@ export default class EventPointPresenter {
   #eventPointsModel = null;
   #eventPointComponent = null;
   #eventEditFormComponent = null;
+  #handleDataChange = null;
+  #point = null;
 
-  constructor({container, eventPointsModel}) {
+  constructor({container, eventPointsModel, onDataChange}) {
     this.#container = container;
     this.#eventPointsModel = eventPointsModel;
+    this.#handleDataChange = onDataChange;
   }
 
   init(point) {
+    this.#point = point;
     const replacePointToForm = () => {
       replace(this.#eventEditFormComponent, this.#eventPointComponent);
     };
@@ -41,7 +45,7 @@ export default class EventPointPresenter {
         replacePointToForm();
         document.addEventListener('keydown', escKeyDownHandler);
       },
-      // onFavoriteClick: this.#handleFavoriteClick
+      onFavoriteClick: this.#handleFavoriteClick
     });
     this.#eventEditFormComponent = new EventEditView({
       point: point,
@@ -77,8 +81,13 @@ export default class EventPointPresenter {
     remove(prevEventEditFormComponent);
   }
 
-  destroy () {
+  destroy() {
     remove(this.#eventPointComponent);
     remove(this.#eventEditFormComponent);
   }
+
+  #handleFavoriteClick = () => {
+    const updatedPoint = {...this.#point, isFavorite: !this.#point.isFavorite};
+    this.#handleDataChange(updatedPoint);
+  };
 }
