@@ -5,7 +5,6 @@ import TripInfoView from '../view/trip-info-view.js';
 import NoEventPointsView from '../view/no-event-points-view.js';
 import { render, RenderPosition } from '../framework/render.js';
 import { filterEventPoints } from '../utils.js';
-import { updatePoint } from '../utils.js';
 import EventPointPresenter from './event-point-presenter.js';
 
 const siteHeaderElement = document.querySelector('.page-header');
@@ -63,7 +62,7 @@ export default class BoardPresenter {
   };
 
   #handleEventPointChange = (updatedPoint) => {
-    this.#eventPoints = updatePoint(this.#eventPoints, updatedPoint);
+    this.#eventPoints = this.#eventPointsModel.updatePoint(this.#eventPoints, updatedPoint);
     this.#eventPointsPresenters.get(updatedPoint.id).init(updatedPoint);
   };
 
