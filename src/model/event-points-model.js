@@ -1,10 +1,9 @@
-import { EVENT_POINTS_COUNT } from '../const.js';
 import { mockDestinations } from '../mock/destination-points.js';
+import { mockEventPoints } from '../mock/event-points.js';
 import { mockOffers } from '../mock/offers.js';
-import { getRandomEventPoint } from '../mock/event-points';
 
 export default class EventPointsModel {
-  #points = Array.from({length: EVENT_POINTS_COUNT}, getRandomEventPoint);
+  #points = mockEventPoints;
   #offers = mockOffers;
   #destinations = mockDestinations;
 
@@ -33,5 +32,9 @@ export default class EventPointsModel {
   getDestinationById(id) {
     const allDestinations = this.destinations;
     return allDestinations.find((destination) => destination.id === id);
+  }
+
+  updatePoint(points, update) {
+    return points.map((point) => point.id === update.id ? update : point);
   }
 }

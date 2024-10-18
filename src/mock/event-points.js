@@ -1,5 +1,3 @@
-import {getRandomArrayElement} from '../utils.js';
-
 export const mockEventPoints = [
   {
     id: 'f4b62099-293f-4c3d-a702-94eec4a2808c',
@@ -48,11 +46,16 @@ export const mockEventPoints = [
     isFavorite: true,
     offers: [],
     type: 'restaurant'
-  }
+  },
+
+  {
+    id: 'f4b62099-293f-4c3d-a702-94eec4a2808g',
+    basePrice: 400,
+    dateFrom: '2024-11-20T23:40:56.845Z',
+    dateTo: '2024-11-31T14:20:13.375Z',
+    destination: 'cfe416cq-10xa-ye10-8077-2fs9a01edcaf',
+    isFavorite: false,
+    offers: ['b4c3e4e6-9053-42ce-b747-e281314baa40'],
+    type: 'sightseeing'
+  },
 ];
-
-function getRandomEventPoint () {
-  return getRandomArrayElement(mockEventPoints);
-}
-
-export {getRandomEventPoint};

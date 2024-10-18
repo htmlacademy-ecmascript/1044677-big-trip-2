@@ -57,4 +57,4 @@ export function filterEventPoints(points) {
   return result;
 }
 
-export {getRandomArrayElement, humanizeEventDate, getTimeGap, createUpperCase};
+export { getRandomArrayElement, humanizeEventDate, getTimeGap, createUpperCase };

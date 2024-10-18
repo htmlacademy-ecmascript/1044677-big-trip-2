@@ -51,4 +51,21 @@ export const mockDestinations = [
       }
     ]
   },
+
+  {
+    id: 'cfe416cq-10xa-ye10-8077-2fs9a01edcaf',
+    description: 'Moscow is a beautiful city, a true russian pearl, with crowded streets.',
+    name: 'Moscow',
+    pictures: [
+      {
+        src: 'https://loremflickr.com/248/152?random=6',
+        description: 'Moscow red square'
+      },
+
+      {
+        src: 'https://loremflickr.com/248/152?random=7',
+        description: 'Moscow parliament building'
+      }
+    ]
+  }
 ];
