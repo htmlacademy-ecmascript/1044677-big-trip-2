@@ -2,12 +2,15 @@ import dayjs from 'dayjs';
 import { NoEventsMessage } from './const.js';
 import { FilterType } from './const.js';
 
+function getEventDuration(event) {
+  return dayjs(event.dateTo).diff(dayjs(event.dateFrom));
+}
 
-function humanizeEventDate(date, format) {
+export function humanizeEventDate(date, format) {
   return (date) ? dayjs(date).format(format) : '';
 }
 
-function getTimeGap(dateFrom, dateTo) {
+export function getTimeGap(dateFrom, dateTo) {
   const durationInMinutes = dayjs(dateTo).diff(dateFrom, 'minute');
 
   if (durationInMinutes < 60) {
@@ -28,11 +31,7 @@ function getTimeGap(dateFrom, dateTo) {
   return `${durationInDays}D ${hours}H ${minutes}M`;
 }
 
-function getRandomArrayElement(items) {
-  return items[Math.floor(Math.random() * items.length)];
-}
-
-function createUpperCase(word) {
+export function createUpperCase(word) {
   return (`${word[0].toUpperCase()}${word.slice(1)}`);
 }
 
@@ -57,4 +56,17 @@ export function filterEventPoints(points) {
   return result;
 }
 
-export { getRandomArrayElement, humanizeEventDate, getTimeGap, createUpperCase };
+export function sortByDate(eventA, eventB) {
+  return dayjs(eventA.dateFrom).diff(dayjs(eventB.dateFrom));
+}
+
+export function sortByTime(eventA, eventB) {
+  const eventADuration = getEventDuration(eventA);
+  const eventBDuration = getEventDuration(eventB);
+
+  return eventBDuration - eventADuration;
+}
+
+export function sortByPrice(eventB, eventA) {
+  return eventA.basePrice - eventB.basePrice;
+}

@@ -1,25 +1,28 @@
-import FilterView from '../view/filter-view.js';
-import EventListView from '../view/event-list-view.js';
 import SortView from '../view/sort-view.js';
+import FilterView from '../view/filter-view.js';
 import TripInfoView from '../view/trip-info-view.js';
+import EventListView from '../view/event-list-view.js';
+import EventPointPresenter from './event-point-presenter.js';
 import NoEventPointsView from '../view/no-event-points-view.js';
+import { sortByDate, sortByTime, sortByPrice } from '../utils.js';
 import { render, RenderPosition } from '../framework/render.js';
 import { filterEventPoints } from '../utils.js';
-import EventPointPresenter from './event-point-presenter.js';
+import { SortType } from '../const.js';
 
 const siteHeaderElement = document.querySelector('.page-header');
 const tripMainElement = siteHeaderElement.querySelector('.trip-main');
 
 export default class BoardPresenter {
   #container = null;
-  #eventPointsModel = null;
   #filterModel = null;
-
-  #sortComponent = new SortView();
+  #sortComponent = null;
+  #eventPointsModel = null;
+  #currentSortType = SortType.DAY;
   #tripInfoComponent = new TripInfoView();
   #eventListComponent = new EventListView();
   #eventPointsPresenters = new Map();
   #eventPoints = [];
+
   constructor({container, eventPointsModel, filterModel}) {
     this.#container = container;
     this.#eventPointsModel = eventPointsModel;
@@ -53,8 +56,43 @@ export default class BoardPresenter {
     render(this.#tripInfoComponent, tripMainElement, RenderPosition.AFTERBEGIN);
   }
 
+  #handleSortTypeChange = (sortType) => {
+    if (this.#currentSortType === sortType) {
+      return;
+    }
+
+    this.#currentSortType = sortType;
+    this.#sortPoints(sortType);
+    this.#clearEventPointsList();
+    this.#renderBoard();
+    this.#sortComponent.element.remove();
+    this.#renderSort();
+  };
+
+  #sortPoints(sortType) {
+
+    switch(sortType) {
+      case SortType.DAY:
+        this.#eventPoints.sort(sortByDate);
+        break;
+      case SortType.PRICE:
+        this.#eventPoints.sort(sortByPrice);
+        break;
+      case SortType.TIME:
+        this.#eventPoints.sort(sortByTime);
+        break;
+    }
+
+    this.#currentSortType = sortType;
+  }
+
   #renderSort() {
-    render(this.#sortComponent, this.#container);
+    this.#sortComponent = new SortView({
+      currentSortType: this.#currentSortType,
+      onSortTypeChange: this.#handleSortTypeChange
+    });
+
+    render(this.#sortComponent, this.#container, RenderPosition.AFTERBEGIN);
   }
 
   #handleModeChange = () => {
