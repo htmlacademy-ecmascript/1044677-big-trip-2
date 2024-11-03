@@ -2,7 +2,6 @@ import {DATE_FORMAT, EVENT_POINTS_TYPE} from '../const.js';
 import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
 import {humanizeEventDate, createUpperCase} from '../utils.js';
 
-
 function createTypeTemplate(type) {
   return (
     `<div class="event__type-item">
@@ -46,7 +45,8 @@ function createOffersListTemplate({offers}, checkedOffers) {
 function createPhotoTemplate(photo) {
   const {src, description} = photo;
   return (
-    `<img class="event__photo" src=${src} alt=${description}>`);
+    `<img class="event__photo" src=${src} alt=${description}>`
+  );
 }
 
 function createPhotoContainerTemplate(pictures) {
@@ -82,9 +82,9 @@ function createDestinationTemplate(destination) {
   }
 }
 
-function createFormEditTemplate(points, offers, checkedOffers, destinations, destinationsAll) {
+function createFormEditTemplate(points, offers, checkedOffers, destination, destinationsAll) {
   const {type, dateFrom, dateTo, basePrice} = points;
-  const {name} = destinations;
+  const {name} = destination;
 
   return (
     `<form class="event event--edit" action="#" method="post">
@@ -138,76 +138,90 @@ function createFormEditTemplate(points, offers, checkedOffers, destinations, des
       </header>
       <section class="event__details">
         ${createOffersListTemplate(offers, checkedOffers)}
-        ${createDestinationTemplate(destinations)}
+        ${createDestinationTemplate(destination, destinationsAll)}
       </section>
     </form>`
   );
 }
 
 export default class EventEditView extends AbstractStatefulView {
+  #point = null;
   #offers = null;
   #checkedOffers = null;
-  #destinations = null;
+  #destination = null;
   #destinationsAll = null;
   #handleFormSubmit = null;
   #handleEditClick = null;
+  #eventPointsModel = null;
 
-  constructor({point, offers, checkedOffers, destinations, destinationsAll, onFormSubmit,onEditClick}) {
+  constructor({point, offers, checkedOffers, destination, destinationsAll, onFormSubmit, onEditClick, eventPointsModel}) {
     super();
+    this.#point = point;
     this.#offers = offers;
     this.#checkedOffers = checkedOffers;
-    this.#destinations = destinations;
+    this.#destination = destination;
     this.#destinationsAll = destinationsAll;
     this.#handleFormSubmit = onFormSubmit;
     this.#handleEditClick = onEditClick;
+    this.#eventPointsModel = eventPointsModel;
 
     this._setState(EventEditView.parsePointToState({point}));
     this._restoreHandlers();
   }
 
   get template() {
-    return createFormEditTemplate(this._state, this.#offers, this.#checkedOffers, this.#destinations,this.#destinationsAll);
+    return createFormEditTemplate(
+      this._state,
+      this.#offers,
+      this.#checkedOffers,
+      this.#destination,
+      this.#destinationsAll,
+    );
   }
 
   _restoreHandlers = () => {
     this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#editClickHandler);
-    this.element.querySelectorAll('.event__type-input').forEach((element) => element.addEventListener('click', this.#changeTypeHandler));
-    this.element.querySelector('.event__input--destination').addEventListener('click', this.#changeDestinationHandler);
+    this.element.querySelectorAll('.event__type-input').forEach((element) => element.addEventListener('change', this.#changeTypeHandler));
+    this.element.querySelector('.event__input--destination').addEventListener('change', this.#changeDestinationHandler);
     this.element.addEventListener('submit', this.#formSubmitHandler);
   };
 
+  reset = (point) => this.updateElement(EventEditView.parsePointToState({point}));
 
   #editClickHandler = (evt) => {
     evt.preventDefault();
     this.#handleEditClick();
-    console.log(this._state);
   };
 
   #changeTypeHandler = (evt) => {
     evt.preventDefault();
+    const offers = this.#eventPointsModel.getOffersByType(evt.target.value);
+    this.#offers = offers;
     this.updateElement({
+      ...this._state,
       type: `${evt.target.value}`,
-      offers: [],
+      offers,
     });
-    console.log(this._state);
   };
 
   #changeDestinationHandler = (evt) => {
-    const selectedDestination = this.#destinationsAll.find((destination) => destination.name === `${evt.target. value}`);
-    const selectedDestinationId = (selectedDestination) ? selectedDestination.id : null;
-    this.updateElement({point: { ...this._state.point, destination: selectedDestinationId } });
+    evt.preventDefault();
+    const selectedDestination = this.#destinationsAll.find((destination) => destination.name === `${evt.target.value}`);
+    const selectedDestinationId = selectedDestination ? selectedDestination.id : null;
+    const newDestination = this.#eventPointsModel.getDestinationById(selectedDestinationId);
+    this.#destination = newDestination;
+    this.updateElement({
+      ...this._state,
+      destination: newDestination
+    });
   };
 
   #formSubmitHandler = (evt) => {
     evt.preventDefault();
     this.#handleFormSubmit(EventEditView.parseStateToPoint(this._state));
-    console.log(this._state);
   };
-
-  reset = (point) => this.updateElement(EventEditView.parsePointToState({point}));
-
 
   static parsePointToState = ({point}) => ({...point});
 
-  static parseStateToPoint = (state) => state.point;
+  static parseStateToPoint = (state) => ({...state.point});
 }

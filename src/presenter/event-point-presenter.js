@@ -26,7 +26,6 @@ export default class EventPointPresenter {
 
   init(point) {
     this.#point = point;
-
     const prevEventPointComponent = this.#eventPointComponent;
     const prevEventEditFormComponent = this.#eventEditFormComponent;
 
@@ -52,11 +51,13 @@ export default class EventPointPresenter {
 
     this.#eventEditFormComponent = new EventEditView({
       point: point,
-      offers: this.#eventPointsModel.getOffersByType(point.type),
+      offers: this.#eventPointsModel.getOffersByType(point.type, point.offers),
       checkedOffers: this.#eventPointsModel.getOffersById(point.type, point.offers),
-      destinations: this.#eventPointsModel.getDestinationById(point.destination),
+      destination: this.#eventPointsModel.getDestinationById(point.destination),
       destinationsAll: this.#eventPointsModel.destinations,
-      onFormSubmit: () => {
+      eventPointsModel: this.#eventPointsModel,
+      onFormSubmit: (updatedPoint) => {
+        this.#eventPointsModel.updatePoint(updatedPoint);
         this.#replaceFormToPoint();
         document.removeEventListener('keydown', escKeyDownHandler);
       },
