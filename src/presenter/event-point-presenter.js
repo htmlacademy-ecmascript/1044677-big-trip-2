@@ -1,5 +1,5 @@
 import EventPointView from '../view/event-point-view.js';
-import EventEditView from '../view/form-edit-view.js';
+import EventEditView from '../view/event-edit-view.js';
 import { remove, render, replace } from '../framework/render.js';
 
 const Mode = {
@@ -26,17 +26,17 @@ export default class EventPointPresenter {
 
   init(point) {
     this.#point = point;
+    const prevEventPointComponent = this.#eventPointComponent;
+    const prevEventEditFormComponent = this.#eventEditFormComponent;
 
     const escKeyDownHandler = (evt) => {
       if (evt.key === 'Escape') {
         evt.preventDefault();
+        this.#eventEditFormComponent.reset(this.#point);
         this.#replaceFormToPoint();
         document.removeEventListener('keydown', escKeyDownHandler);
       }
     };
-
-    const prevEventPointComponent = this.#eventPointComponent;
-    const prevEventEditFormComponent = this.#eventEditFormComponent;
 
     this.#eventPointComponent = new EventPointView({
       point: point,
@@ -48,13 +48,16 @@ export default class EventPointPresenter {
       },
       onFavoriteClick: this.#handleFavoriteClick
     });
+
     this.#eventEditFormComponent = new EventEditView({
       point: point,
-      offers: this.#eventPointsModel.getOffersByType(point.type),
+      offers: this.#eventPointsModel.getOffersByType(point.type, point.offers),
       checkedOffers: this.#eventPointsModel.getOffersById(point.type, point.offers),
-      destinations: this.#eventPointsModel.getDestinationById(point.destination),
+      destination: this.#eventPointsModel.getDestinationById(point.destination),
       destinationsAll: this.#eventPointsModel.destinations,
-      onFormSubmit: () => {
+      eventPointsModel: this.#eventPointsModel,
+      onFormSubmit: (updatedPoint) => {
+        this.#eventPointsModel.updatePoint(updatedPoint);
         this.#replaceFormToPoint();
         document.removeEventListener('keydown', escKeyDownHandler);
       },
