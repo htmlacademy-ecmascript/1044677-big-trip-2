@@ -1,6 +1,9 @@
 import {DATE_FORMAT, EVENT_POINTS_TYPE} from '../const.js';
 import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
 import {humanizeEventDate, createUpperCase} from '../utils.js';
+import flatpickr from 'flatpickr';
+
+import 'flatpickr/dist/flatpickr.min.css';
 
 function createTypeTemplate(type) {
   return (
@@ -145,7 +148,6 @@ function createFormEditTemplate(points, offers, checkedOffers, destination, dest
 }
 
 export default class EventEditView extends AbstractStatefulView {
-  #point = null;
   #offers = null;
   #checkedOffers = null;
   #destination = null;
@@ -153,10 +155,11 @@ export default class EventEditView extends AbstractStatefulView {
   #handleFormSubmit = null;
   #handleEditClick = null;
   #eventPointsModel = null;
+  #datepickerFrom = null;
+  #datepickerTo = null;
 
   constructor({point, offers, checkedOffers, destination, destinationsAll, onFormSubmit, onEditClick, eventPointsModel}) {
     super();
-    this.#point = point;
     this.#offers = offers;
     this.#checkedOffers = checkedOffers;
     this.#destination = destination;
