@@ -169,6 +169,7 @@ export default class EventEditView extends AbstractStatefulView {
     this.#eventPointsModel = eventPointsModel;
 
     this._setState(EventEditView.parsePointToState({point}));
+    this.#setDatepickers();
     this._restoreHandlers();
   }
 
@@ -188,6 +189,20 @@ export default class EventEditView extends AbstractStatefulView {
     this.element.querySelector('.event__input--destination').addEventListener('change', this.#changeDestinationHandler);
     this.element.addEventListener('submit', this.#formSubmitHandler);
   };
+
+  removeElement() {
+    super.removeElement();
+
+    if(this.#datepickerFrom) {
+      this.#datepickerFrom.destroy();
+      this.#datepickerFrom = null;
+    }
+
+    if(this.#datepickerTo) {
+      this.#datepickerTo.destroy();
+      this.#datepickerTo = null;
+    }
+  }
 
   reset = (point) => this.updateElement(EventEditView.parsePointToState({point}));
 
@@ -217,6 +232,46 @@ export default class EventEditView extends AbstractStatefulView {
       ...this._state,
       destination: newDestination
     });
+  };
+
+  #dateFromChangeHandler = ([userDate]) => {
+    this._setState({ ...this._state.point, dateFrom: userDate});
+    this.#datepickerTo.set('minDate', this._state.dateFrom);
+  };
+
+  #dateToChangeHandler = ([userDate]) => {
+    this._setState({ ...this._state.point, dateTo: userDate});
+    this.#datepickerFrom.set('maxDate', this._state.dateTo);
+  };
+
+  #setDatepickers = () => {
+    const [ dateFromElement, dateToElement ] = this.element.querySelectorAll('.event__input--time');
+    const dateFormatConfig = {
+      dateFormat: 'd/m/y H:i',
+      enableTime: true,
+      Locale: {firstDay0fWeek: 1},
+      'time_24hr': true
+    };
+
+    this.#datepickerFrom = flatpickr(
+      dateFromElement,
+      {
+        ...dateFormatConfig,
+        defaultDate: this._state.dateFrom,
+        onClose: this.#dateFromChangeHandler,
+        maxDate: this._state.dateTo
+      }
+    );
+
+    this.#datepickerTo = flatpickr(
+      dateToElement,
+      {
+        ...dateFormatConfig,
+        defaultDate: this._state.dateTo,
+        onClose: this.#dateToChangeHandler,
+        minDate: this._state.dateFrom
+      }
+    );
   };
 
   #formSubmitHandler = (evt) => {
