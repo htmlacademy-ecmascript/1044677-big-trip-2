@@ -51,7 +51,7 @@ export default class EventPointPresenter {
 
     this.#eventEditFormComponent = new EventEditView({
       point: point,
-      offers: this.#eventPointsModel.getOffersByType(point.type, point.offers),
+      offers: this.#eventPointsModel.getOffersByType(point.type),
       checkedOffers: this.#eventPointsModel.getOffersById(point.type, point.offers),
       destination: this.#eventPointsModel.getDestinationById(point.destination),
       destinationsAll: this.#eventPointsModel.destinations,
