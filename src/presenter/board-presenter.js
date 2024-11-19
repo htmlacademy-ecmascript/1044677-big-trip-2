@@ -29,6 +29,10 @@ export default class BoardPresenter {
     this.#filterModel = filterModel;
   }
 
+  get points() {
+    return this.#eventPointsModel.points;
+  }
+
   init() {
     this.#eventPoints = [...this.#eventPointsModel.points];
     this.#renderTripInfo();
