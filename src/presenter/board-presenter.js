@@ -21,7 +21,6 @@ export default class BoardPresenter {
   #tripInfoComponent = new TripInfoView();
   #eventListComponent = new EventListView();
   #eventPointsPresenters = new Map();
-  #eventPoints = [];
 
   constructor({container, eventPointsModel, filterModel}) {
     this.#container = container;
@@ -30,11 +29,19 @@ export default class BoardPresenter {
   }
 
   get points() {
+    switch(this.#currentSortType) {
+      case SortType.DAY:
+        return [...this.#eventPointsModel.points].sort(sortByDate);
+      case SortType.PRICE:
+        return [...this.#eventPointsModel.points].sort(sortByPrice);
+      case SortType.TIME:
+        return [...this.#eventPointsModel.points].sort(sortByTime);
+    }
+
     return this.#eventPointsModel.points;
   }
 
   init() {
-    this.#eventPoints = [...this.#eventPointsModel.points];
     this.#renderTripInfo();
     this.#renderSort();
     this.#renderFilter();
@@ -66,27 +73,11 @@ export default class BoardPresenter {
     }
 
     this.#currentSortType = sortType;
-    this.#sortPoints(sortType);
     this.#clearEventPointsList();
     this.#renderBoard();
     this.#sortComponent.element.remove();
     this.#renderSort();
   };
-
-  #sortPoints(sortType) {
-
-    switch(sortType) {
-      case SortType.DAY:
-        this.#eventPoints.sort(sortByDate);
-        break;
-      case SortType.PRICE:
-        this.#eventPoints.sort(sortByPrice);
-        break;
-      case SortType.TIME:
-        this.#eventPoints.sort(sortByTime);
-        break;
-    }
-  }
 
   #renderSort() {
     this.#sortComponent = new SortView({
@@ -102,7 +93,7 @@ export default class BoardPresenter {
   };
 
   #handleEventPointChange = (updatedPoint) => {
-    this.#eventPoints = this.#eventPointsModel.updatePoint(this.#eventPoints, updatedPoint);
+
     this.#eventPointsPresenters.get(updatedPoint.id).init(updatedPoint);
   };
 
@@ -121,18 +112,18 @@ export default class BoardPresenter {
   }
 
   #renderNoEvents() {
-    if(this.#eventPoints.length === 0) {
+    if(this.#eventPointsModel.points.length === 0) {
       render(new NoEventPointsView(this.#filterModel), this.#container);
     }
   }
 
   #renderBoard() {
-    for (let i = 0; i < this.#eventPoints.length; i++) {
+    for (let i = 0; i < this.points.length; i++) {
       this.#renderEventPoint(
-        this.#eventPoints[i],
-        this.#eventPointsModel.getOffersByType(this.#eventPoints[i].type),
-        this.#eventPointsModel.getOffersById(this.#eventPoints[i].type, this.#eventPoints[i].offers),
-        this.#eventPointsModel.getDestinationById(this.#eventPoints[i].destination)
+        this.points[i],
+        this.#eventPointsModel.getOffersByType(this.points[i].type),
+        this.#eventPointsModel.getOffersById(this.points[i].type, this.points[i].offers),
+        this.#eventPointsModel.getDestinationById(this.points[i].destination)
       );
     }
   }
