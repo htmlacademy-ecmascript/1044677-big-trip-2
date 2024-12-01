@@ -26,6 +26,8 @@ export default class BoardPresenter {
     this.#container = container;
     this.#eventPointsModel = eventPointsModel;
     this.#filterModel = filterModel;
+
+    this.#eventPointsModel.addObserver(this.#handleModelEvent);
   }
 
   get points() {
@@ -55,7 +57,7 @@ export default class BoardPresenter {
       container: this.#eventListComponent.element,
       eventPointsModel: this.#eventPointsModel,
       filterModel: this.#filterModel,
-      onDataChange: this.#handleEventPointChange,
+      onDataChange: this.#handleViewAction,
       onModeChange: this.#handleModeChange
     });
 
@@ -92,9 +94,20 @@ export default class BoardPresenter {
     this.#eventPointsPresenters.forEach((presenter) => presenter.resetView());
   };
 
-  #handleEventPointChange = (updatedPoint) => {
+  #handleViewAction = (actionType, updateType, update) => {
+    console.log(actionType, updateType, update);
+    // Здесь будем вызывать обновление модели.
+    // actionType - действие пользователя, нужно чтобы понять, какой метод модели вызвать
+    // updateType - тип изменений, нужно чтобы понять, что после нужно обновить
+    // update - обновленные данные
+  };
 
-    this.#eventPointsPresenters.get(updatedPoint.id).init(updatedPoint);
+  #handleModelEvent = (updateType, data) => {
+    console.log(updateType, data);
+    // В зависимости от типа изменений решаем, что делать:
+    // - обновить часть списка (например, когда поменялось описание)
+    // - обновить список (например, когда задача ушла в архив)
+    // - обновить всю доску (например, при переключении фильтра)
   };
 
   #renderFilter() {

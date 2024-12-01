@@ -1,6 +1,7 @@
 import EventPointView from '../view/event-point-view.js';
 import EventEditView from '../view/event-edit-view.js';
 import { remove, render, replace } from '../framework/render.js';
+import { UserAction, UpdateType } from '../const.js';
 
 const Mode = {
   DEFAULT: 'DEFAULT',
@@ -56,11 +57,7 @@ export default class EventPointPresenter {
       destination: this.#eventPointsModel.getDestinationById(point.destination),
       destinationsAll: this.#eventPointsModel.destinations,
       eventPointsModel: this.#eventPointsModel,
-      onFormSubmit: (updatedPoint) => {
-        this.#eventPointsModel.updatePoint(updatedPoint);
-        this.#replaceFormToPoint();
-        document.removeEventListener('keydown', escKeyDownHandler);
-      },
+      onFormSubmit: this.#handleFormSubmit,
 
       onEditClick: () => {
         this.#replaceFormToPoint();
@@ -111,6 +108,19 @@ export default class EventPointPresenter {
 
   #handleFavoriteClick = () => {
     const updatedPoint = {...this.#point, isFavorite: !this.#point.isFavorite};
-    this.#handleDataChange(updatedPoint);
+    this.#handleDataChange(
+      UserAction.UPDATE_POINT,
+      UpdateType.MINOR,
+      updatedPoint
+    );
+  };
+
+  #handleFormSubmit = (point) => {
+    this.#handleDataChange(
+      UserAction.UPDATE_POINT,
+      UpdateType.MINOR,
+      point,
+    );
+    this.#replaceFormToPoint();
   };
 }
