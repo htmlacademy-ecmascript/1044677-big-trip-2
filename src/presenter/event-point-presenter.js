@@ -110,16 +110,16 @@ export default class EventPointPresenter {
     const updatedPoint = {...this.#point, isFavorite: !this.#point.isFavorite};
     this.#handleDataChange(
       UserAction.UPDATE_POINT,
-      UpdateType.MINOR,
+      UpdateType.PATCH,
       updatedPoint
     );
   };
 
-  #handleFormSubmit = (point) => {
+  #handleFormSubmit = () => {
     this.#handleDataChange(
       UserAction.UPDATE_POINT,
       UpdateType.MINOR,
-      point,
+      this.#point,
     );
     this.#replaceFormToPoint();
   };
