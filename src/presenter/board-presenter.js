@@ -5,7 +5,7 @@ import EventListView from '../view/event-list-view.js';
 import EventPointPresenter from './event-point-presenter.js';
 import NoEventPointsView from '../view/no-event-points-view.js';
 import { sortByDate, sortByTime, sortByPrice } from '../utils.js';
-import { render, RenderPosition } from '../framework/render.js';
+import { remove, render, RenderPosition } from '../framework/render.js';
 import { filterEventPoints } from '../utils.js';
 import { SortType, UpdateType, UserAction } from '../const.js';
 
@@ -47,7 +47,7 @@ export default class BoardPresenter {
     this.#renderTripInfo();
     this.#renderSort();
     this.#renderFilter();
-    this.#renderEventsList();
+    // this.#renderEventsList();
     this.#renderBoard();
     this.#renderNoEvents();
   }
@@ -90,6 +90,16 @@ export default class BoardPresenter {
     render(this.#sortComponent, this.#container, RenderPosition.AFTERBEGIN);
   }
 
+  #clearBoard({resetSortType = false} = {}) {
+    this.#eventPointsPresenters.forEach((presenter) => presenter.destroy());
+    this.#eventPointsPresenters.clear();
+    // remove(this.#sortComponent);
+
+    if (resetSortType) {
+      this.#currentSortType = SortType.DAY;
+    }
+  }
+
   #handleModeChange = () => {
     this.#eventPointsPresenters.forEach((presenter) => presenter.resetView());
   };
@@ -109,17 +119,17 @@ export default class BoardPresenter {
   };
 
   #handleModelEvent = (updateType, data) => {
-    // В зависимости от типа изменений решаем, что делать:
     switch (updateType) {
       case UpdateType.PATCH:
-        // - обновить часть списка (например, когда поменялось описание)
         this.#eventPointsPresenters.get(data.id).init(data);
         break;
       case UpdateType.MINOR:
-        // - обновить список (например, когда задача ушла в архив)
+        this.#clearBoard();
+        this.#renderBoard();
         break;
       case UpdateType.MAJOR:
-        // - обновить всю доску (например, при переключении фильтра)
+        this.#clearBoard({resetSortType: true});
+        this.#renderBoard();
         break;
     }
   };
@@ -129,9 +139,10 @@ export default class BoardPresenter {
     render(new FilterView(filters,this.#filterModel),tripMainElement);
   }
 
-  #renderEventsList() {
-    render(this.#eventListComponent, this.#container);
-  }
+  // #renderEventsList() {
+  //   render(this.#eventListComponent, this.#container);
+  //   this.#renderSort();
+  // }
 
   #clearEventPointsList() {
     this.#eventPointsPresenters.forEach((presenter) => presenter.destroy());
@@ -153,5 +164,7 @@ export default class BoardPresenter {
         this.#eventPointsModel.getDestinationById(this.points[i].destination)
       );
     }
+
+    render(this.#eventListComponent, this.#container);
   }
 }
