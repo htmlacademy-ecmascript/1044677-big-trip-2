@@ -139,8 +139,16 @@ export default class BoardPresenter {
 
   #renderFilter() {
     const filters = filterEventPoints(this.#eventPointsModel.points);
-    render(new FilterView(filters, this.#filterModel),tripMainElement);
+    render(new FilterView({
+      filters: filters,
+      currentFilterType: this.#filterModel.filter,
+      onFilterTypeChange: this.#handleFilterTypeChange
+    }), tripMainElement);
   }
+
+  #handleFilterTypeChange = (filterType) => {
+    this.#filterModel.setFilter(UpdateType.MAJOR, filterType);
+  };
 
   #clearEventPointsList() {
     this.#eventPointsPresenters.forEach((presenter) => presenter.destroy());

@@ -54,6 +54,7 @@ export function filterEventPoints(points) {
       };
     });
   return result;
+
 }
 
 export function sortByDate(eventA, eventB) {
