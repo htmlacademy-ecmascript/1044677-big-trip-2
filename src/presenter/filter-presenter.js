@@ -1,4 +1,4 @@
-import FiltersView from '../view/filter-view.js';
+import FilterView from '../view/filter-view.js';
 import { filterEventPoints } from '../utils.js';
 import { FilterType, UpdateType } from '../const.js';
 import { render, replace, remove } from '../framework/render.js';
@@ -50,7 +50,7 @@ export default class FilterPresenter {
     const filters = this.filters;
     const prevFilterComponent = this.#filterComponent;
 
-    this.#filterComponent = new FiltersView({
+    this.#filterComponent = new FilterView({
       filters,
       currentFilterType: this.#filterModel.filter,
       onFilterTypeChange: this.#handleFilterTypeChange,

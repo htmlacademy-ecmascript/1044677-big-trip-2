@@ -39,11 +39,11 @@ export default class FilterView extends AbstractView {
   #currentFilterType = null;
   #handleFilterTypeChange = null;
 
-  constructor(filters, filterModel, onFilterTypeChange) {
+  constructor(filters, currentFilterType, filterModel, onFilterTypeChange) {
     super();
     this.#filters = filters;
+    this.#currentFilterType = currentFilterType;
     this.#filterModel = filterModel;
-    this.#currentFilterType = filterModel.getCurrentFilter;
     this.#handleFilterTypeChange = onFilterTypeChange;
 
     this.element.addEventListener('change', this.#filterTypeChangeHandler);

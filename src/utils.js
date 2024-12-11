@@ -45,12 +45,12 @@ export function filterEventPoints(points) {
   };
 
   const result = Object.entries(filteredPoints).map(
-    ([filterType]) => {
-      const count = filteredPoints[filterType].length;
+    ([type]) => {
+      const count = filteredPoints[type].length;
       return {
-        type: FilterType[filterType],
+        type: FilterType[type],
         count: count,
-        placeholder: count === 0 ? NoEventsMessage[FilterType[filterType]] : null
+        placeholder: count === 0 ? NoEventsMessage[FilterType[type]] : null
       };
     });
   return result;

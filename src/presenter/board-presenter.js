@@ -139,7 +139,7 @@ export default class BoardPresenter {
 
   #renderFilter() {
     const filters = filterEventPoints(this.#eventPointsModel.points);
-    render(new FilterView(filters,this.#filterModel),tripMainElement);
+    render(new FilterView(filters, this.#filterModel),tripMainElement);
   }
 
   #clearEventPointsList() {
