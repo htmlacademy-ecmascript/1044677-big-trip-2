@@ -49,7 +49,6 @@ export default class BoardPresenter {
   init() {
     this.#renderTripInfo();
     this.#renderSort();
-    // this.#renderFilter();
     this.#renderBoard();
     this.#renderNoEvents();
     // this.#renderNewEventButton();

@@ -2,7 +2,6 @@ import EventPointView from '../view/event-point-view.js';
 import EventEditView from '../view/event-edit-view.js';
 import { remove, render, replace } from '../framework/render.js';
 import { UserAction, UpdateType } from '../const.js';
-import { isDateEqual } from '../utils.js';
 import { Mode } from '../const.js';
 
 export default class EventPointPresenter {
@@ -114,10 +113,6 @@ export default class EventPointPresenter {
   };
 
   #handleFormSubmit = (update) => {
-    // const isMinorUpdate = !isDateEqual(this.#point.dateFrom, update.dateFrom) ||
-    //   !isDateEqual(this.#point.dateTo, update.dateTo) ||
-    //   (this.#point.basePrice !== update.basePrice);
-
     this.#handleDataChange(
       UserAction.UPDATE_POINT,
       UpdateType.MINOR,
