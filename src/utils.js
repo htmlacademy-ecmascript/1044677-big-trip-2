@@ -50,7 +50,8 @@ export function filterEventPoints(points) {
       return {
         type: FilterType[type],
         count: count,
-        placeholder: count === 0 ? NoEventsMessage[FilterType[type]] : null
+        placeholder: count === 0 ? NoEventsMessage[FilterType[type]] : null,
+        points: filteredPoints[type],
       };
     });
   return result;

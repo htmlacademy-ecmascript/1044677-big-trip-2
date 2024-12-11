@@ -49,7 +49,7 @@ export default class BoardPresenter {
   init() {
     this.#renderTripInfo();
     this.#renderSort();
-    this.#renderFilter();
+    // this.#renderFilter();
     this.#renderBoard();
     this.#renderNoEvents();
     // this.#renderNewEventButton();
@@ -136,15 +136,6 @@ export default class BoardPresenter {
         break;
     }
   };
-
-  #renderFilter() {
-    const filters = filterEventPoints(this.#eventPointsModel.points);
-    render(new FilterView({
-      filters: filters,
-      currentFilterType: this.#filterModel.filter,
-      onFilterTypeChange: this.#handleFilterTypeChange
-    }), tripMainElement);
-  }
 
   #handleFilterTypeChange = (filterType) => {
     this.#filterModel.setFilter(UpdateType.MAJOR, filterType);

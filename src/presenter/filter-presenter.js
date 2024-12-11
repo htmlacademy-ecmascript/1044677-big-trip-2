@@ -21,35 +21,39 @@ export default class FilterPresenter {
 
   get filters() {
     const points = this.#eventPointsModel.points;
+    const filteredPoints = filterEventPoints(points);
+     console.log('Filtered Points:', filteredPoints);
+    // const pointsFilter = (arr, type) => arr.find((point) => point.type === type);
 
-    return [
-      {
-        type: FilterType.EVERYTHING,
-        name: 'everything',
-        count: filterEventPoints[FilterType.EVERYTHING](points).length,
-      },
-      {
-        type: FilterType.FUTURE,
-        name: 'future',
-        count: filterEventPoints[FilterType.FUTURE](points).length,
-      },
-      {
-        type: FilterType.PRESENT,
-        name: 'present',
-        count: filterEventPoints[FilterType.PRESENT](points).length,
-      },
-      {
-        type: FilterType.PAST,
-        name: 'past',
-        count: filterEventPoints[FilterType.PAST](points).length,
-      },
-    ];
+    return filterEventPoints(points);
+    // return [
+    //   {
+    //     type: FilterType.EVERYTHING,
+    //     name: 'everything',
+    //     count: pointsFilter(filterEventPoints(points), FilterType.EVERYTHING).count,
+    //   },
+    //   {
+    //     type: FilterType.FUTURE,
+    //     name: 'future',
+    //     count: pointsFilter(filterEventPoints(points), FilterType.FUTURE).count,
+    //   },
+    //   {
+    //     type: FilterType.PRESENT,
+    //     name: 'present',
+    //     count: pointsFilter(filterEventPoints(points), FilterType.PRESENT).count,
+    //   },
+    //   {
+    //     type: FilterType.PAST,
+    //     name: 'past',
+    //     count: pointsFilter(filterEventPoints(points), FilterType.PAST).count,
+    //   },
+    // ];
   }
 
   init() {
     const filters = this.filters;
     const prevFilterComponent = this.#filterComponent;
-
+    console.log(filters);
     this.#filterComponent = new FilterView({
       filters,
       currentFilterType: this.#filterModel.filter,
