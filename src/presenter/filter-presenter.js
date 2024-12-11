@@ -8,19 +8,19 @@ export default class FilterPresenter {
   #filterModel = null;
   #filterContainer = null;
   #filterComponent = null;
-  #eventsPointsModel = null;
+  #eventPointsModel = null;
 
-  constructor({filterContainer, filterModel, eventsPointsModel}) {
+  constructor({filterContainer, filterModel, eventPointsModel}) {
     this.#filterContainer = filterContainer;
     this.#filterModel = filterModel;
-    this.#eventsPointsModel = eventsPointsModel;
+    this.#eventPointsModel = eventPointsModel;
 
     this.#filterModel.addObserver(this.#handleModelEvent);
-    // this.#eventsPointsModel.addObserver(this.#handleModelEvent);
+    this.#eventPointsModel.addObserver(this.#handleModelEvent);
   }
 
   get filters() {
-    const points = this.#eventsPointsModel.points;
+    const points = this.#eventPointsModel.points;
 
     return [
       {
