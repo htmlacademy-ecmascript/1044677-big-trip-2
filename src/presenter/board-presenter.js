@@ -131,6 +131,7 @@ export default class BoardPresenter {
         break;
       case UpdateType.MAJOR:
         this.#clearBoard({resetSortType: true});
+        this.#renderSort();
         this.#renderBoard();
         break;
     }
