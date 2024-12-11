@@ -154,11 +154,12 @@ export default class EventEditView extends AbstractStatefulView {
   #destinationsAll = null;
   #handleFormSubmit = null;
   #handleEditClick = null;
+  #handleDeleteClick = null;
   #eventPointsModel = null;
   #datepickerFrom = null;
   #datepickerTo = null;
 
-  constructor({point, offers, checkedOffers, destination, destinationsAll, onFormSubmit, onEditClick, eventPointsModel}) {
+  constructor({point, offers, checkedOffers, destination, destinationsAll, onFormSubmit, onEditClick, onDeleteClick, eventPointsModel}) {
     super();
     this.#offers = offers;
     this.#checkedOffers = checkedOffers;
@@ -166,6 +167,7 @@ export default class EventEditView extends AbstractStatefulView {
     this.#destinationsAll = destinationsAll;
     this.#handleFormSubmit = onFormSubmit;
     this.#handleEditClick = onEditClick;
+    this.#handleDeleteClick = onDeleteClick;
     this.#eventPointsModel = eventPointsModel;
 
     this._setState(EventEditView.parsePointToState({point}));
@@ -183,10 +185,16 @@ export default class EventEditView extends AbstractStatefulView {
     );
   }
 
+  #deleteClickHandler = (evt) => {
+    evt.preventDefault();
+    this.#handleDeleteClick(EventEditView.parseStateToPoint(this._state));
+  };
+
   _restoreHandlers = () => {
     this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#editClickHandler);
     this.element.querySelectorAll('.event__type-input').forEach((element) => element.addEventListener('change', this.#changeTypeHandler));
     this.element.querySelector('.event__input--destination').addEventListener('change', this.#changeDestinationHandler);
+    this.element.querySelector('.event__reset-btn').addEventListener('click', this.#deleteClickHandler);
     this.element.addEventListener('submit', this.#formSubmitHandler);
   };
 
@@ -210,6 +218,7 @@ export default class EventEditView extends AbstractStatefulView {
     evt.preventDefault();
     this.#handleEditClick();
   };
+
 
   #changeTypeHandler = (evt) => {
     evt.preventDefault();
@@ -281,5 +290,5 @@ export default class EventEditView extends AbstractStatefulView {
 
   static parsePointToState = ({point}) => ({...point});
 
-  static parseStateToPoint = (state) => ({...state.point});
+  static parseStateToPoint = (state) => ({...state});
 }

@@ -35,34 +35,31 @@ export default class EventPointsModel extends Observable {
     return allDestinations.find((destination) => destination.id === id);
   }
 
-  // updatePoint(update) {
-  //   this.#points.map((point) => point.id === update.id ? update : point);
-  //   return this.#points;
-  // }
+  updatePoint(updateType, updatedPoint) {
+    const index = this.#points.findIndex((point) => point.id === updatedPoint.id);
 
-  updatePoint(updateType, update) {
-    const index = this.#points.findIndex((point) => point.id === update.id);
     if (index === -1) {
-      throw new Error('Can\'t update unexisting point');
+      throw new Error(`Can't update unexisting point with id: ${updatedPoint.id}`);
     }
+
     this.#points = [
       ...this.#points.slice(0, index),
-      update,
+      updatedPoint,
       ...this.#points.slice(index + 1),
     ];
-    this._notify(updateType, update);
+    this._notify(updateType, updatedPoint.id);
   }
 
-  addPoint(updateType, update) {
+  addPoint(updateType, newPoint) {
     this.#points = [
-      update,
+      newPoint,
       ...this.#points,
     ];
-    this._notify(updateType, update);
+    this._notify(updateType, newPoint.id);
   }
 
-  deletePoint(updateType, update) {
-    const index = this.#points.findIndex((task) => task.id === update.id);
+  deletePoint(updateType, point) {
+    const index = this.#points.findIndex((item) => item.id === point.id);
     if (index === -1) {
       throw new Error('Can\'t delete unexisting point');
     }
@@ -70,6 +67,6 @@ export default class EventPointsModel extends Observable {
       ...this.#points.slice(0, index),
       ...this.#points.slice(index + 1),
     ];
-    this._notify(updateType);
+    this._notify(updateType, point.id);
   }
 }

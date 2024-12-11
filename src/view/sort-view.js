@@ -56,5 +56,4 @@ export default class SortView extends AbstractView {
 
     this.#handleSortTypeChange(evt.target.dataset.sortType);
   };
-
 }

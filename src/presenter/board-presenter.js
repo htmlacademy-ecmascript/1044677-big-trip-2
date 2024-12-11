@@ -4,10 +4,11 @@ import TripInfoView from '../view/trip-info-view.js';
 import EventListView from '../view/event-list-view.js';
 import EventPointPresenter from './event-point-presenter.js';
 import NoEventPointsView from '../view/no-event-points-view.js';
-import { sortByDate, sortByTime, sortByPrice } from '../utils.js';
+import NewEventButtonView from '../view/new-event-button-view.js';
 import { remove, render, RenderPosition } from '../framework/render.js';
-import { filterEventPoints } from '../utils.js';
+import { sortByDate, sortByTime, sortByPrice } from '../utils.js';
 import { SortType, UpdateType, UserAction } from '../const.js';
+import { filterEventPoints } from '../utils.js';
 
 const siteHeaderElement = document.querySelector('.page-header');
 const tripMainElement = siteHeaderElement.querySelector('.trip-main');
@@ -17,6 +18,7 @@ export default class BoardPresenter {
   #filterModel = null;
   #sortComponent = null;
   #eventPointsModel = null;
+  #newEventButtonComponent = null;
   #currentSortType = SortType.DAY;
   #tripInfoComponent = new TripInfoView();
   #eventListComponent = new EventListView();
@@ -28,6 +30,7 @@ export default class BoardPresenter {
     this.#filterModel = filterModel;
 
     this.#eventPointsModel.addObserver(this.#handleModelEvent);
+    this.#filterModel.addObserver(this.#handleModelEvent);
   }
 
   get points() {
@@ -47,9 +50,9 @@ export default class BoardPresenter {
     this.#renderTripInfo();
     this.#renderSort();
     this.#renderFilter();
-    // this.#renderEventsList();
     this.#renderBoard();
     this.#renderNoEvents();
+    // this.#renderNewEventButton();
   }
 
   #renderEventPoint(point) {
@@ -76,9 +79,9 @@ export default class BoardPresenter {
 
     this.#currentSortType = sortType;
     this.#clearEventPointsList();
-    this.#renderBoard();
     this.#sortComponent.element.remove();
     this.#renderSort();
+    this.#renderBoard();
   };
 
   #renderSort() {
@@ -93,7 +96,7 @@ export default class BoardPresenter {
   #clearBoard({resetSortType = false} = {}) {
     this.#eventPointsPresenters.forEach((presenter) => presenter.destroy());
     this.#eventPointsPresenters.clear();
-    // remove(this.#sortComponent);
+    remove(this.#sortComponent);
 
     if (resetSortType) {
       this.#currentSortType = SortType.DAY;
@@ -104,16 +107,16 @@ export default class BoardPresenter {
     this.#eventPointsPresenters.forEach((presenter) => presenter.resetView());
   };
 
-  #handleViewAction = (actionType, updateType, update) => {
+  #handleViewAction = (actionType, updateType, updatedPoint) => {
     switch (actionType) {
       case UserAction.UPDATE_POINT:
-        this.#eventPointsModel.updatePoint(updateType, update);
+        this.#eventPointsModel.updatePoint(updateType, updatedPoint);
         break;
       case UserAction.ADD_POINT:
-        this.#eventPointsModel.addPoint(updateType, update);
+        this.#eventPointsModel.addPoint(updateType, updatedPoint);
         break;
       case UserAction.DELETE_POINT:
-        this.#eventPointsModel.deletePoint(updateType, update);
+        this.#eventPointsModel.deletePoint(updateType, updatedPoint);
         break;
     }
   };
@@ -124,7 +127,7 @@ export default class BoardPresenter {
         this.#eventPointsPresenters.get(data.id).init(data);
         break;
       case UpdateType.MINOR:
-        this.#clearBoard();
+        this.#clearEventPointsList();
         this.#renderBoard();
         break;
       case UpdateType.MAJOR:
@@ -139,11 +142,6 @@ export default class BoardPresenter {
     render(new FilterView(filters,this.#filterModel),tripMainElement);
   }
 
-  // #renderEventsList() {
-  //   render(this.#eventListComponent, this.#container);
-  //   this.#renderSort();
-  // }
-
   #clearEventPointsList() {
     this.#eventPointsPresenters.forEach((presenter) => presenter.destroy());
     this.#eventPointsPresenters.clear();
@@ -156,6 +154,12 @@ export default class BoardPresenter {
   }
 
   #renderBoard() {
+    if (this.points.length === 0) {
+      remove(this.#eventListComponent);
+      this.#renderNoEvents();
+      return;
+    }
+
     for (let i = 0; i < this.points.length; i++) {
       this.#renderEventPoint(
         this.points[i],
@@ -167,4 +171,35 @@ export default class BoardPresenter {
 
     render(this.#eventListComponent, this.#container);
   }
+
+  // #renderNewEventButton() {
+  //   this.#newEventButtonComponent = new NewEventButtonView({
+  //     onClick: this.#handleNewEventButtonClick
+  //   });
+
+  //   render(this.#newEventButtonComponent, tripMainElement);
+  // }
+
+  // #createEmptyPoint = () => ({
+  //   basePrice: 0,
+  //   dateFrom: 0,
+  //   dateTo: 0,
+  //   destination: this.#eventPointsModel.destinations[0].id,
+  //   isFavorite: false,
+  //   offers: [],
+  //   type: 'taxi'
+  // });
+
+  // #handleNewEventButtonClick = () => {
+  //   this.#handleModeChange();
+  //   const eventPointPresenter = new EventPointPresenter({
+  //     container: this.#eventListComponent.element,
+  //     eventPointsModel: this.#eventPointsModel,
+  //     onDataChange: this.#handleViewAction,
+  //     onModeChange: this.#handleModeChange
+  //   });
+
+  //   const emptyPoint = this.#createEmptyPoint();
+  //   eventPointPresenter.init(emptyPoint);
+  // };
 }

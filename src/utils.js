@@ -70,3 +70,7 @@ export function sortByTime(eventA, eventB) {
 export function sortByPrice(eventB, eventA) {
   return eventA.basePrice - eventB.basePrice;
 }
+
+export function isDateEqual(dateA, dateB) {
+  return (dateA === null && dateB === null) || dayjs(dateA).isSame(dateB, 'D');
+}
