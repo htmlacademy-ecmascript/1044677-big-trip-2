@@ -227,7 +227,7 @@ export default class EventEditView extends AbstractStatefulView {
     this.updateElement({
       ...this._state,
       type: `${evt.target.value}`,
-      offers,
+      offers: [],
     });
   };
 
