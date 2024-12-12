@@ -1,8 +1,9 @@
+import Observable from '../framework/observable.js';
 import { mockDestinations } from '../mock/destination-points.js';
 import { mockEventPoints } from '../mock/event-points.js';
 import { mockOffers } from '../mock/offers.js';
 
-export default class EventPointsModel {
+export default class EventPointsModel extends Observable {
   #points = mockEventPoints;
   #offers = mockOffers;
   #destinations = mockDestinations;
@@ -34,8 +35,38 @@ export default class EventPointsModel {
     return allDestinations.find((destination) => destination.id === id);
   }
 
-  updatePoint(update) {
-    this.#points.map((point) => point.id === update.id ? update : point);
-    return this.#points;
+  updatePoint(updateType, updatedPoint) {
+    const index = this.#points.findIndex((point) => point.id === updatedPoint.id);
+
+    if (index === -1) {
+      throw new Error('Can\'t update unexisting point');
+    }
+
+    this.#points = [
+      ...this.#points.slice(0, index),
+      updatedPoint,
+      ...this.#points.slice(index + 1),
+    ];
+    this._notify(updateType, updatedPoint.id);
+  }
+
+  addPoint(updateType, newPoint) {
+    this.#points = [
+      newPoint,
+      ...this.#points,
+    ];
+    this._notify(updateType, newPoint.id);
+  }
+
+  deletePoint(updateType, point) {
+    const index = this.#points.findIndex((item) => item.id === point.id);
+    if (index === -1) {
+      throw new Error('Can\'t delete unexisting point');
+    }
+    this.#points = [
+      ...this.#points.slice(0, index),
+      ...this.#points.slice(index + 1),
+    ];
+    this._notify(updateType, point.id);
   }
 }

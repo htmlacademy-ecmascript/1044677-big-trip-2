@@ -36,7 +36,7 @@ export default class SortView extends AbstractView {
   #currentSortType = null;
   #handleSortTypeChange = null;
 
-  constructor({ currentSortType, onSortTypeChange}) {
+  constructor({currentSortType, onSortTypeChange}) {
     super();
     this.#currentSortType = currentSortType;
     this.#handleSortTypeChange = onSortTypeChange;
@@ -56,5 +56,4 @@ export default class SortView extends AbstractView {
 
     this.#handleSortTypeChange(evt.target.dataset.sortType);
   };
-
 }
