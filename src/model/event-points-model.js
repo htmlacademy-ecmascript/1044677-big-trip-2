@@ -39,7 +39,7 @@ export default class EventPointsModel extends Observable {
     const index = this.#points.findIndex((point) => point.id === updatedPoint.id);
 
     if (index === -1) {
-      throw new Error(`Can't update unexisting point with id: ${updatedPoint.id}`);
+      throw new Error('Can\'t update unexisting point');
     }
 
     this.#points = [

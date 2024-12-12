@@ -1,5 +1,4 @@
 import SortView from '../view/sort-view.js';
-import FilterView from '../view/filter-view.js';
 import TripInfoView from '../view/trip-info-view.js';
 import EventListView from '../view/event-list-view.js';
 import EventPointPresenter from './event-point-presenter.js';
@@ -34,16 +33,20 @@ export default class BoardPresenter {
   }
 
   get points() {
+    const currentFilter = this.#filterModel.filter;
+    const filteredFilters = filterEventPoints(this.#eventPointsModel.points);
+    const currentFilterPoints = filteredFilters.find((filter) => filter.type === currentFilter);
+    const filteredPoints = currentFilterPoints ? currentFilterPoints.points : [];
+
     switch(this.#currentSortType) {
       case SortType.DAY:
-        return [...this.#eventPointsModel.points].sort(sortByDate);
+        return [...filteredPoints].sort(sortByDate);
       case SortType.PRICE:
-        return [...this.#eventPointsModel.points].sort(sortByPrice);
+        return [...filteredPoints].sort(sortByPrice);
       case SortType.TIME:
-        return [...this.#eventPointsModel.points].sort(sortByTime);
+        return [...filteredPoints].sort(sortByTime);
     }
-
-    return this.#eventPointsModel.points;
+    return filteredPoints;
   }
 
   init() {
@@ -51,7 +54,6 @@ export default class BoardPresenter {
     this.#renderSort();
     this.#renderBoard();
     this.#renderNoEvents();
-    // this.#renderNewEventButton();
   }
 
   #renderEventPoint(point) {

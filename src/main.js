@@ -19,5 +19,5 @@ const boardPresenter = new BoardPresenter({
   filterModel
 });
 
-boardPresenter.init();
 filterPresenter.init();
+boardPresenter.init();
