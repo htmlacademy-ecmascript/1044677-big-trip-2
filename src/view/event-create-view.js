@@ -1,6 +1,9 @@
-import AbstractView from '../framework/view/abstract-view.js';
 import {DATE_FORMAT, EVENT_POINTS_TYPE} from '../const.js';
+import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
 import {humanizeEventDate, createUpperCase} from '../utils.js';
+import flatpickr from 'flatpickr';
+
+import 'flatpickr/dist/flatpickr.min.css';
 
 function createTypeTemplate(type) {
   return (
@@ -131,8 +134,145 @@ function createNewEventTemplate(points, offers, destination) {
   );
 }
 
-export default class EventCreateView extends AbstractView {
-  get template() {
-    return createNewEventTemplate();
+export default class EventCreateView extends AbstractStatefulView {
+  #offers = null;
+  #checkedOffers = null;
+  #destination = null;
+  #destinationsAll = null;
+  #handleFormSubmit = null;
+  #handleFormCancel = null;
+  #eventPointsModel = null;
+  #datepickerFrom = null;
+  #datepickerTo = null;
+
+  constructor({offers, destinationsAll, onFormSubmit, onFormCancel, eventPointsModel}) {
+    super();
+    this.#offers = offers;
+    this.#checkedOffers = [];
+    this.#destination = {};
+    this.#destinationsAll = destinationsAll;
+    this.#handleFormSubmit = onFormSubmit;
+    this.#handleFormCancel = onFormCancel;
+    this.#eventPointsModel = eventPointsModel;
+
+    this._setState(EventCreateView.parsePointToState());
+    this.#setDatepickers();
+    this._restoreHandlers();
   }
+
+  get template() {
+    return createNewEventTemplate(
+      this._state,
+      this.#offers,
+      this.#checkedOffers,
+      this.#destination,
+      this.#destinationsAll,
+    );
+  }
+
+  #formSubmitHandler = (evt) => {
+    evt.preventDefault();
+    this.#handleFormSubmit(EventCreateView.parseStateToPoint(this._state));
+  };
+
+  #formCancelHandler = (evt) => {
+    evt.preventDefault();
+    this.#handleFormCancel();
+  };
+
+  _restoreHandlers = () => {
+    this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#formCancelHandler);
+    this.element.querySelectorAll('.event__type-input').forEach((element) => element.addEventListener('change', this.#changeTypeHandler));
+    this.element.querySelector('.event__input--destination').addEventListener('change', this.#changeDestinationHandler);
+    this.element.querySelector('.event__reset-btn').addEventListener('click', this.#formCancelHandler);
+    this.element.addEventListener('submit', this.#formSubmitHandler);
+  };
+
+  removeElement() {
+    super.removeElement();
+
+    if(this.#datepickerFrom) {
+      this.#datepickerFrom.destroy();
+      this.#datepickerFrom = null;
+    }
+
+    if(this.#datepickerTo) {
+      this.#datepickerTo.destroy();
+      this.#datepickerTo = null;
+    }
+  }
+
+  #changeTypeHandler = (evt) => {
+    evt.preventDefault();
+    const offers = this.#eventPointsModel.getOffersByType(evt.target.value);
+    this.#offers = offers;
+    this.#checkedOffers = [];
+    this.updateElement({
+      ...this._state,
+      type: `${evt.target.value}`,
+      offers: [],
+    });
+  };
+
+  #changeDestinationHandler = (evt) => {
+    evt.preventDefault();
+    const selectedDestination = this.#destinationsAll.find((destination) => destination.name === `${evt.target.value}`);
+    const selectedDestinationId = selectedDestination ? selectedDestination.id : null;
+    const newDestination = this.#eventPointsModel.getDestinationById(selectedDestinationId) || {};
+    this.#destination = newDestination;
+    this.updateElement({
+      ...this._state,
+      destination: newDestination
+    });
+  };
+
+  #dateFromChangeHandler = ([userDate]) => {
+    this._setState({ ...this._state, dateFrom: userDate});
+    this.#datepickerTo.set('minDate', this._state.dateFrom);
+  };
+
+  #dateToChangeHandler = ([userDate]) => {
+    this._setState({ ...this._state, dateTo: userDate});
+    this.#datepickerFrom.set('maxDate', this._state.dateTo);
+  };
+
+  #setDatepickers = () => {
+    const [ dateFromElement, dateToElement ] = this.element.querySelectorAll('.event__input--time');
+    const dateFormatConfig = {
+      dateFormat: 'd/m/y H:i',
+      enableTime: true,
+      Locale: {firstDay0fWeek: 1},
+      'time_24hr': true
+    };
+
+    this.#datepickerFrom = flatpickr(
+      dateFromElement,
+      {
+        ...dateFormatConfig,
+        defaultDate: this._state.dateFrom,
+        onClose: this.#dateFromChangeHandler,
+        maxDate: this._state.dateTo
+      }
+    );
+
+    this.#datepickerTo = flatpickr(
+      dateToElement,
+      {
+        ...dateFormatConfig,
+        defaultDate: this._state.dateTo,
+        onClose: this.#dateToChangeHandler,
+        minDate: this._state.dateFrom
+      }
+    );
+  };
+
+  static parsePointToState = () => ({
+    type: EVENT_POINTS_TYPE[0],
+    dateFrom: new Date(),
+    dateTo: new Date(),
+    basePrice: '',
+    destination: {},
+  });
+
+  static parseStateToPoint = (state) => ({...state});
 }

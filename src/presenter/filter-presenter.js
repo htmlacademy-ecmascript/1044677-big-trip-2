@@ -3,7 +3,6 @@ import { filterEventPoints } from '../utils.js';
 import { UpdateType } from '../const.js';
 import { render, replace, remove } from '../framework/render.js';
 
-
 export default class FilterPresenter {
   #filterModel = null;
   #filterContainer = null;
@@ -50,7 +49,6 @@ export default class FilterPresenter {
     if (this.#filterModel.filter === filterType) {
       return;
     }
-
     this.#filterModel.setFilter(UpdateType.MAJOR, filterType);
   };
 }

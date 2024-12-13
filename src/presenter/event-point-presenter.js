@@ -1,5 +1,6 @@
 import EventPointView from '../view/event-point-view.js';
 import EventEditView from '../view/event-edit-view.js';
+import EventCreateView from '../view/event-create-view.js';
 import { remove, render, replace } from '../framework/render.js';
 import { UserAction, UpdateType } from '../const.js';
 import { Mode } from '../const.js';
@@ -107,7 +108,7 @@ export default class EventPointPresenter {
     const updatedPoint = {...this.#point, isFavorite: !this.#point.isFavorite};
     this.#handleDataChange(
       UserAction.UPDATE_POINT,
-      UpdateType.MINOR,
+      UpdateType.PATCH,
       updatedPoint
     );
   };

@@ -2,7 +2,7 @@ import dayjs from 'dayjs';
 import { NoEventsMessage } from './const.js';
 import { FilterType } from './const.js';
 
-function getEventDuration(event) {
+export function getEventDuration(event) {
   return dayjs(event.dateTo).diff(dayjs(event.dateFrom));
 }
 
