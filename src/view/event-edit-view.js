@@ -65,6 +65,9 @@ function createPhotoContainerTemplate(pictures) {
 }
 
 function createDestinationListTemplate (destinations, selectedDestinationId) {
+  if (!destinations) {
+    return '';
+  }
   const selectedDestinationObject = destinations.find((destination) => destination.id === selectedDestinationId);
 
   return (`${destinations.map((item) => `<option value="${item.name}" ${(selectedDestinationObject === item) ? 'selected' : ''}>${item.name}</option>`).join('')}`);
@@ -73,7 +76,7 @@ function createDestinationListTemplate (destinations, selectedDestinationId) {
 function createDestinationTemplate(destination) {
   const {description, pictures} = destination;
 
-  if (description > 0 || pictures.length > 0) {
+  if (description > 0 || (pictures && pictures.length > 0)) {
     return (
       `<section class="event__section  event__section--destination">
           <h3 class="event__section-title  event__section-title--destination">Destination</h3>
@@ -239,7 +242,7 @@ export default class EventEditView extends AbstractStatefulView {
     this.#destination = newDestination;
     this.updateElement({
       ...this._state,
-      destination: newDestination
+      destination: selectedDestinationId
     });
   };
 

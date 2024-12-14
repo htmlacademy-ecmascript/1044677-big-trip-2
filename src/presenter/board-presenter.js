@@ -5,7 +5,7 @@ import EventPointPresenter from './event-point-presenter.js';
 import NoEventPointsView from '../view/no-event-points-view.js';
 import { remove, render, RenderPosition } from '../framework/render.js';
 import { sortByDate, sortByTime, sortByPrice } from '../utils.js';
-import { SortType, UpdateType, UserAction } from '../const.js';
+import { SortType, UpdateType, UserAction, FilterType } from '../const.js';
 import { filterEventPoints } from '../utils.js';
 
 const siteHeaderElement = document.querySelector('.page-header');
@@ -179,20 +179,23 @@ export default class BoardPresenter {
     this.#newEventButtonComponent.addEventListener('click', this.#handleNewEventButtonClick);
   }
 
-  #createNewPoint = () => ({
-  });
-
   #handleNewEventButtonClick = () => {
-    console.log('Кнопка "New Event" была нажата.');
+    this.#filterModel.setFilter(UpdateType.MAJOR, FilterType.EVERYTHING);
     this.#handleModeChange();
+    this.#currentSortType = SortType.DAY;
+    this.#clearBoard({resetSortType: true});
+    this.#renderSort();
+    this.#renderBoard();
+
     const eventPointPresenter = new EventPointPresenter({
       container: this.#eventListComponent.element,
       eventPointsModel: this.#eventPointsModel,
+      filterModel: this.#filterModel,
       onDataChange: this.#handleViewAction,
       onModeChange: this.#handleModeChange
     });
 
-    const newPoint = this.#createNewPoint();
-    eventPointPresenter.init(newPoint);
+    const newPoint = eventPointPresenter.createPoint();
+    this.#eventPointsPresenters.set(newPoint, eventPointPresenter);
   };
 }

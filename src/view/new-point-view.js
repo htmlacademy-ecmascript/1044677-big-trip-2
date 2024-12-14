@@ -1,4 +1,4 @@
-import {DATE_FORMAT, EVENT_POINTS_TYPE} from '../const.js';
+import {DATE_FORMAT, EVENT_POINTS_TYPE, BLANK_POINT} from '../const.js';
 import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
 import {humanizeEventDate, createUpperCase} from '../utils.js';
 import flatpickr from 'flatpickr';
@@ -65,7 +65,7 @@ function createPhotoContainerTemplate(pictures) {
 function createDestinationTemplate(destination) {
   const {description, pictures} = destination;
 
-  if (description > 0 || pictures.length > 0) {
+  if (description || (pictures && pictures.length > 0)) {
     return (
       `<section class="event__section  event__section--destination">
           <h3 class="event__section-title  event__section-title--destination">Destination</h3>
@@ -74,6 +74,7 @@ function createDestinationTemplate(destination) {
       </section>`
     );
   }
+  return '';
 }
 
 function createNewEventTemplate(points, offers, destination) {
@@ -134,7 +135,8 @@ function createNewEventTemplate(points, offers, destination) {
   );
 }
 
-export default class EventCreateView extends AbstractStatefulView {
+export default class NewPointView extends AbstractStatefulView {
+  #point = null;
   #offers = null;
   #checkedOffers = null;
   #destination = null;
@@ -147,6 +149,7 @@ export default class EventCreateView extends AbstractStatefulView {
 
   constructor({offers, destinationsAll, onFormSubmit, onFormCancel, eventPointsModel}) {
     super();
+    this.#point = BLANK_POINT;
     this.#offers = offers;
     this.#checkedOffers = [];
     this.#destination = {};
@@ -155,7 +158,7 @@ export default class EventCreateView extends AbstractStatefulView {
     this.#handleFormCancel = onFormCancel;
     this.#eventPointsModel = eventPointsModel;
 
-    this._setState(EventCreateView.parsePointToState());
+    this._setState(NewPointView.parsePointToState());
     this.#setDatepickers();
     this._restoreHandlers();
   }
@@ -164,15 +167,13 @@ export default class EventCreateView extends AbstractStatefulView {
     return createNewEventTemplate(
       this._state,
       this.#offers,
-      this.#checkedOffers,
-      this.#destination,
-      this.#destinationsAll,
+      this.#destination
     );
   }
 
   #formSubmitHandler = (evt) => {
     evt.preventDefault();
-    this.#handleFormSubmit(EventCreateView.parseStateToPoint(this._state));
+    this.#handleFormSubmit(NewPointView.parseStateToPoint(this._state));
   };
 
   #formCancelHandler = (evt) => {
@@ -181,11 +182,13 @@ export default class EventCreateView extends AbstractStatefulView {
   };
 
   _restoreHandlers = () => {
-    this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#formCancelHandler);
-    this.element.querySelectorAll('.event__type-input').forEach((element) => element.addEventListener('change', this.#changeTypeHandler));
+    this.element.querySelectorAll('.event__type-input').forEach((element) =>
+      element.addEventListener('change', this.#changeTypeHandler)
+    );
     this.element.querySelector('.event__input--destination').addEventListener('change', this.#changeDestinationHandler);
     this.element.querySelector('.event__reset-btn').addEventListener('click', this.#formCancelHandler);
     this.element.addEventListener('submit', this.#formSubmitHandler);
+    this.#setDatepickers();
   };
 
   removeElement() {
@@ -222,7 +225,7 @@ export default class EventCreateView extends AbstractStatefulView {
     this.#destination = newDestination;
     this.updateElement({
       ...this._state,
-      destination: newDestination
+      destination: selectedDestinationId
     });
   };
 

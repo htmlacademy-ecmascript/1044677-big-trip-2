@@ -26,8 +26,12 @@ export default class EventPointsModel extends Observable {
   }
 
   getOffersById(type, offersId) {
-    const offersType = this.getOffersByType(type);
-    return offersType.offers.filter((item) => offersId.find((id) => item.id === id));
+    if (!type || !offersId) {
+      return [];
+    } else {
+      const offersType = this.getOffersByType(type);
+      return offersType.offers.filter((item) => offersId.find((id) => item.id === id));
+    }
   }
 
   getDestinationById(id) {
