@@ -2,7 +2,7 @@ import {DATE_FORMAT, EVENT_POINTS_TYPE} from '../const.js';
 import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
 import {humanizeEventDate, createUpperCase} from '../utils.js';
 import flatpickr from 'flatpickr';
-
+import he from 'he';
 import 'flatpickr/dist/flatpickr.min.css';
 
 function createTypeTemplate(type) {
@@ -80,7 +80,7 @@ function createDestinationTemplate(destination) {
     return (
       `<section class="event__section  event__section--destination">
           <h3 class="event__section-title  event__section-title--destination">Destination</h3>
-          <p class="event__destination-description">${description}</p>
+          <p class="event__destination-description">${he.encode(description)}</p>
 
           ${createPhotoContainerTemplate(pictures)}
       </section>`

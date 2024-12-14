@@ -2,7 +2,7 @@ import {DATE_FORMAT, EVENT_POINTS_TYPE, BLANK_POINT} from '../const.js';
 import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
 import {humanizeEventDate, createUpperCase} from '../utils.js';
 import flatpickr from 'flatpickr';
-
+import he from 'he';
 import 'flatpickr/dist/flatpickr.min.css';
 
 function createTypeTemplate(type) {
@@ -69,7 +69,7 @@ function createDestinationTemplate(destination) {
     return (
       `<section class="event__section  event__section--destination">
           <h3 class="event__section-title  event__section-title--destination">Destination</h3>
-          <p class="event__destination-description">${description}</p>
+          <p class="event__destination-description">${he.encode(description)}</p>
           ${createPhotoContainerTemplate(pictures)}
       </section>`
     );
@@ -77,9 +77,9 @@ function createDestinationTemplate(destination) {
   return '';
 }
 
-function createNewEventTemplate(points, offers, destination) {
+function createNewEventTemplate(points, offers, destination, destinationsAll) {
   const {type, dateFrom, dateTo, basePrice} = points;
-  const {name} = destination;
+  const {name = ''} = destination || {};
   return (`
     <form class="event event--edit" action="#" method="post">
       <header class="event__header">
@@ -104,7 +104,7 @@ function createNewEventTemplate(points, offers, destination) {
           </label>
           <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${name}" list="destination-list-1">
           <datalist id="destination-list-1">
-          ${destination}
+          ${destinationsAll.map((item) => `<option value="${item.name}"></option>`).join('')}
           </datalist>
         </div>
 
@@ -121,7 +121,13 @@ function createNewEventTemplate(points, offers, destination) {
             <span class="visually-hidden">Price</span>
             &euro;
           </label>
-          <input class="event__input  event__input--price" id="event-price-1" type="text" name="event-price" value="${basePrice}">
+          <input class="event__input  event__input--price"
+       id="event-price-1"
+       type="number"
+       name="event-price"
+       value="${basePrice}"
+       min="0"
+       required>
         </div>
 
         <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
@@ -167,7 +173,8 @@ export default class NewPointView extends AbstractStatefulView {
     return createNewEventTemplate(
       this._state,
       this.#offers,
-      this.#destination
+      this.#destination,
+      this.#destinationsAll
     );
   }
 
@@ -185,10 +192,26 @@ export default class NewPointView extends AbstractStatefulView {
     this.element.querySelectorAll('.event__type-input').forEach((element) =>
       element.addEventListener('change', this.#changeTypeHandler)
     );
+    this.element.querySelector('.event__input--price').addEventListener('input', this.#priceInputHandler);
     this.element.querySelector('.event__input--destination').addEventListener('change', this.#changeDestinationHandler);
     this.element.querySelector('.event__reset-btn').addEventListener('click', this.#formCancelHandler);
     this.element.addEventListener('submit', this.#formSubmitHandler);
     this.#setDatepickers();
+  };
+
+  #priceInputHandler = (evt) => {
+    evt.preventDefault();
+    const value = evt.target.value;
+
+    if (value === '' || isNaN(value)) {
+      evt.target.value = '';
+      return;
+    }
+
+    this._setState({
+      ...this._state,
+      basePrice: parseInt(value, 10)
+    });
   };
 
   removeElement() {
@@ -220,6 +243,10 @@ export default class NewPointView extends AbstractStatefulView {
   #changeDestinationHandler = (evt) => {
     evt.preventDefault();
     const selectedDestination = this.#destinationsAll.find((destination) => destination.name === `${evt.target.value}`);
+    if (!selectedDestination) {
+      evt.target.value = '';
+      return;
+    }
     const selectedDestinationId = selectedDestination ? selectedDestination.id : null;
     const newDestination = this.#eventPointsModel.getDestinationById(selectedDestinationId) || {};
     this.#destination = newDestination;
