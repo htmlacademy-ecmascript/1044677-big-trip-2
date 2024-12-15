@@ -114,7 +114,7 @@ function createFormEditTemplate(points, offers, checkedOffers, destination, dest
           <label class="event__label  event__type-output" for="event-destination-1">
             ${createUpperCase(type)}
           </label>
-          <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value='${name}' list="destination-list-1">
+          <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value='${name}' list="destination-list-1" required>
           <datalist id="destination-list-1">
           ${createDestinationListTemplate(destinationsAll)}
           </datalist>
@@ -199,6 +199,10 @@ export default class EventEditView extends AbstractStatefulView {
     this.element.querySelector('.event__input--destination').addEventListener('change', this.#changeDestinationHandler);
     this.element.querySelector('.event__reset-btn').addEventListener('click', this.#deleteClickHandler);
     this.element.addEventListener('submit', this.#formSubmitHandler);
+
+    this.element.querySelector('.event__input--price').addEventListener('input', this.#priceChangeHandler);
+    this.element.querySelectorAll('.event__offer-checkbox').forEach((element) =>
+      element.addEventListener('change', this.#offerChangeHandler));
   };
 
   removeElement() {
@@ -237,9 +241,16 @@ export default class EventEditView extends AbstractStatefulView {
   #changeDestinationHandler = (evt) => {
     evt.preventDefault();
     const selectedDestination = this.#destinationsAll.find((destination) => destination.name === `${evt.target.value}`);
+
+    if (!selectedDestination) {
+      evt.target.value = '';
+      return;
+    }
+
     const selectedDestinationId = selectedDestination ? selectedDestination.id : null;
     const newDestination = this.#eventPointsModel.getDestinationById(selectedDestinationId);
     this.#destination = newDestination;
+
     this.updateElement({
       ...this._state,
       destination: selectedDestinationId
@@ -291,7 +302,41 @@ export default class EventEditView extends AbstractStatefulView {
     this.#handleFormSubmit(EventEditView.parseStateToPoint(this._state));
   };
 
-  static parsePointToState = ({point}) => ({...point});
+  #priceChangeHandler = (evt) => {
+    evt.preventDefault();
+    const newPrice = parseInt(evt.target.value, 10);
+
+    if (Number.isNaN(newPrice) || newPrice < 0) {
+      return;
+    }
+
+    this._setState({
+      ...this._state,
+      basePrice: newPrice
+    });
+  };
+
+  #offerChangeHandler = (evt) => {
+    evt.preventDefault();
+    const clickedOfferId = evt.target.id;
+
+    let updatedOffers;
+    if (evt.target.checked) {
+      updatedOffers = [...this._state.offers, clickedOfferId];
+    } else {
+      updatedOffers = this._state.offers.filter((id) => id !== clickedOfferId);
+    }
+
+    this._setState({
+      ...this._state,
+      offers: updatedOffers
+    });
+  };
+
+  static parsePointToState = ({point}) => ({
+    ...point,
+    offers: point.offers || []
+  });
 
   static parseStateToPoint = (state) => ({...state});
 }

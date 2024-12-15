@@ -184,8 +184,14 @@ export default class BoardPresenter {
     this.#handleModeChange();
     this.#currentSortType = SortType.DAY;
     this.#clearBoard({resetSortType: true});
+
+    if (this.#noEventPointsComponent) {
+      remove(this.#noEventPointsComponent);
+      this.#noEventPointsComponent = null;
+    }
+
     this.#renderSort();
-    this.#renderBoard();
+    render(this.#eventListComponent, this.#container);
 
     const eventPointPresenter = new EventPointPresenter({
       container: this.#eventListComponent.element,
