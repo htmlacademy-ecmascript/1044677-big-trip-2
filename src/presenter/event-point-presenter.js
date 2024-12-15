@@ -18,7 +18,7 @@ export default class EventPointPresenter {
   #mode = Mode.DEFAULT;
   #escKeyDownHandler = null;
 
-  constructor({container, eventPointsModel, onDataChange, onModeChange, onFormCancel}) {
+  constructor({container, eventPointsModel, onDataChange, onModeChange}) {
     this.#container = container;
     this.#eventPointsModel = eventPointsModel;
     this.#handleDataChange = onDataChange;

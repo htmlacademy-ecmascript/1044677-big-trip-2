@@ -1,4 +1,4 @@
-import { nanoid } from "nanoid";
+import { nanoid } from 'nanoid';
 
 export const EVENT_POINTS_COUNT = 10;
 export const DATE_FORMAT = {
