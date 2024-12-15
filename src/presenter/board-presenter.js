@@ -1,12 +1,12 @@
 import SortView from '../view/sort-view.js';
+import { filterEventPoints } from '../utils.js';
 import TripInfoView from '../view/trip-info-view.js';
 import EventListView from '../view/event-list-view.js';
 import EventPointPresenter from './event-point-presenter.js';
 import NoEventPointsView from '../view/no-event-points-view.js';
-import { remove, render, RenderPosition } from '../framework/render.js';
 import { sortByDate, sortByTime, sortByPrice } from '../utils.js';
+import { remove, render, RenderPosition } from '../framework/render.js';
 import { SortType, UpdateType, UserAction, FilterType } from '../const.js';
-import { filterEventPoints } from '../utils.js';
 
 const siteHeaderElement = document.querySelector('.page-header');
 const tripMainElement = siteHeaderElement.querySelector('.trip-main');
@@ -118,9 +118,11 @@ export default class BoardPresenter {
         break;
       case UserAction.ADD_POINT:
         this.#eventPointsModel.addPoint(updateType, updatedPoint);
+        this.#isCreatingNewPoint = false;
         break;
       case UserAction.DELETE_POINT:
         this.#eventPointsModel.deletePoint(updateType, updatedPoint);
+        this.#isCreatingNewPoint = false;
         break;
     }
   };
@@ -153,17 +155,17 @@ export default class BoardPresenter {
   }
 
   #renderNoEvents() {
-    if(this.points.length === 0 && !this.#isCreatingNewPoint) {
-      this.#noEventPointsComponent = new NoEventPointsView(this.#filterModel);
-      render(this.#noEventPointsComponent, this.#container);
-    }
+    this.#noEventPointsComponent = new NoEventPointsView(this.#filterModel);
+    render(this.#noEventPointsComponent, this.#container);
   }
 
   #renderBoard() {
-    remove(this.#noEventPointsComponent);
-    this.#noEventPointsComponent = null;
+    if (this.#noEventPointsComponent) {
+      remove(this.#noEventPointsComponent);
+      this.#noEventPointsComponent = null;
+    }
 
-    if (this.points.length === 0) {
+    if (this.points.length === 0 && !this.#isCreatingNewPoint) {
       this.#renderNoEvents();
       return;
     }
@@ -185,11 +187,6 @@ export default class BoardPresenter {
     this.#filterModel.setFilter(UpdateType.MAJOR, FilterType.EVERYTHING);
     this.#handleModeChange();
     this.#currentSortType = SortType.DAY;
-
-    if (this.#noEventPointsComponent) {
-      remove(this.#noEventPointsComponent);
-      this.#noEventPointsComponent = null;
-    }
 
     this.#clearBoard({resetSortType: true});
     this.#renderSort();
