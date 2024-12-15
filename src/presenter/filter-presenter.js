@@ -1,6 +1,6 @@
+import { UpdateType } from '../const.js';
 import FilterView from '../view/filter-view.js';
 import { filterEventPoints } from '../utils.js';
-import { UpdateType } from '../const.js';
 import { render, replace, remove } from '../framework/render.js';
 
 export default class FilterPresenter {

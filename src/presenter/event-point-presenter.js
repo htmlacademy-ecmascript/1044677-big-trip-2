@@ -1,22 +1,22 @@
-import EventPointView from '../view/event-point-view.js';
-import EventEditView from '../view/event-edit-view.js';
-import NewPointView from '../view/new-point-view.js';
-import { remove, render, RenderPosition, replace } from '../framework/render.js';
-import { UserAction, UpdateType, BLANK_POINT } from '../const.js';
-import { Mode } from '../const.js';
 import { nanoid } from 'nanoid';
+import { Mode } from '../const.js';
+import NewPointView from '../view/new-point-view.js';
+import EventEditView from '../view/event-edit-view.js';
+import EventPointView from '../view/event-point-view.js';
+import { UserAction, UpdateType, BLANK_POINT } from '../const.js';
+import { remove, render, RenderPosition, replace } from '../framework/render.js';
 
 export default class EventPointPresenter {
+  #point = null;
   #container = null;
+  #mode = Mode.DEFAULT;
+  #handleDataChange = null;
   #eventPointsModel = null;
+  #handleModeChange = null;
+  #escKeyDownHandler = null;
   #eventPointComponent = null;
   #eventEditFormComponent = null;
   #eventCreateFormComponent = null;
-  #handleDataChange = null;
-  #handleModeChange = null;
-  #point = null;
-  #mode = Mode.DEFAULT;
-  #escKeyDownHandler = null;
 
   constructor({container, eventPointsModel, onDataChange, onModeChange}) {
     this.#container = container;

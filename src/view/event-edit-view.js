@@ -1,9 +1,9 @@
-import {DATE_FORMAT, EVENT_POINTS_TYPE} from '../const.js';
-import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
-import {humanizeEventDate, createUpperCase} from '../utils.js';
-import flatpickr from 'flatpickr';
 import he from 'he';
+import flatpickr from 'flatpickr';
 import 'flatpickr/dist/flatpickr.min.css';
+import {DATE_FORMAT, EVENT_POINTS_TYPE} from '../const.js';
+import {humanizeEventDate, createUpperCase} from '../utils.js';
+import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
 
 function createTypeTemplate(type) {
   return (
@@ -152,25 +152,25 @@ function createFormEditTemplate(points, offers, checkedOffers, destination, dest
 
 export default class EventEditView extends AbstractStatefulView {
   #offers = null;
-  #checkedOffers = null;
   #destination = null;
+  #datepickerTo = null;
+  #checkedOffers = null;
+  #datepickerFrom = null;
+  #handleEditClick = null;
   #destinationsAll = null;
   #handleFormSubmit = null;
-  #handleEditClick = null;
-  #handleDeleteClick = null;
   #eventPointsModel = null;
-  #datepickerFrom = null;
-  #datepickerTo = null;
+  #handleDeleteClick = null;
 
   constructor({point, offers, checkedOffers, destination, destinationsAll, onFormSubmit, onEditClick, onDeleteClick, eventPointsModel}) {
     super();
     this.#offers = offers;
-    this.#checkedOffers = checkedOffers;
     this.#destination = destination;
-    this.#destinationsAll = destinationsAll;
-    this.#handleFormSubmit = onFormSubmit;
+    this.#checkedOffers = checkedOffers;
     this.#handleEditClick = onEditClick;
+    this.#handleFormSubmit = onFormSubmit;
     this.#handleDeleteClick = onDeleteClick;
+    this.#destinationsAll = destinationsAll;
     this.#eventPointsModel = eventPointsModel;
 
     this._setState(EventEditView.parsePointToState({point}));

@@ -1,11 +1,11 @@
-import Observable from '../framework/observable.js';
-import { mockDestinations } from '../mock/destination-points.js';
-import { mockEventPoints } from '../mock/event-points.js';
 import { mockOffers } from '../mock/offers.js';
+import Observable from '../framework/observable.js';
+import { mockEventPoints } from '../mock/event-points.js';
+import { mockDestinations } from '../mock/destination-points.js';
 
 export default class EventPointsModel extends Observable {
-  #points = mockEventPoints;
   #offers = mockOffers;
+  #points = mockEventPoints;
   #destinations = mockDestinations;
 
   get points() {

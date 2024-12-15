@@ -142,9 +142,7 @@ function createNewEventTemplate(points, offers, destination, destinationsAll) {
 }
 
 export default class NewPointView extends AbstractStatefulView {
-  #point = null;
   #offers = null;
-  #checkedOffers = null;
   #destination = null;
   #destinationsAll = null;
   #handleFormSubmit = null;
@@ -155,9 +153,7 @@ export default class NewPointView extends AbstractStatefulView {
 
   constructor({offers, destinationsAll, onFormSubmit, onFormCancel, eventPointsModel}) {
     super();
-    this.#point = BLANK_POINT;
     this.#offers = offers;
-    this.#checkedOffers = [];
     this.#destination = {};
     this.#destinationsAll = destinationsAll;
     this.#handleFormSubmit = onFormSubmit;
@@ -232,7 +228,6 @@ export default class NewPointView extends AbstractStatefulView {
     evt.preventDefault();
     const offers = this.#eventPointsModel.getOffersByType(evt.target.value);
     this.#offers = offers;
-    this.#checkedOffers = [];
     this.updateElement({
       ...this._state,
       type: `${evt.target.value}`,

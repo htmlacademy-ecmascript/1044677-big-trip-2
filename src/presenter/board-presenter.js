@@ -16,12 +16,12 @@ export default class BoardPresenter {
   #filterModel = null;
   #sortComponent = null;
   #eventPointsModel = null;
+  #noEventPointsComponent = null;
   #newEventButtonComponent = null;
   #currentSortType = SortType.DAY;
+  #eventPointsPresenters = new Map();
   #tripInfoComponent = new TripInfoView();
   #eventListComponent = new EventListView();
-  #noEventPointsComponent = null;
-  #eventPointsPresenters = new Map();
 
   constructor({container, eventPointsModel, filterModel}) {
     this.#container = container;
@@ -192,6 +192,7 @@ export default class BoardPresenter {
 
     this.#renderSort();
     render(this.#eventListComponent, this.#container);
+    this.#renderBoard();
 
     const eventPointPresenter = new EventPointPresenter({
       container: this.#eventListComponent.element,
