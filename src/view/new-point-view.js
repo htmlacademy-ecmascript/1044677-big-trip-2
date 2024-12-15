@@ -1,4 +1,4 @@
-import {DATE_FORMAT, EVENT_POINTS_TYPE, BLANK_POINT} from '../const.js';
+import {DATE_FORMAT, EVENT_POINTS_TYPE} from '../const.js';
 import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
 import {humanizeEventDate, createUpperCase} from '../utils.js';
 import flatpickr from 'flatpickr';
@@ -192,6 +192,8 @@ export default class NewPointView extends AbstractStatefulView {
     this.element.querySelector('.event__input--destination').addEventListener('change', this.#changeDestinationHandler);
     this.element.querySelector('.event__reset-btn').addEventListener('click', this.#formCancelHandler);
     this.element.addEventListener('submit', this.#formSubmitHandler);
+    this.element.querySelectorAll('.event__offer-checkbox').forEach((element) =>
+      element.addEventListener('change', this.#offerChangeHandler));
     this.#setDatepickers();
   };
 
@@ -291,12 +293,30 @@ export default class NewPointView extends AbstractStatefulView {
     );
   };
 
+  #offerChangeHandler = (evt) => {
+    evt.preventDefault();
+    const clickedOfferId = evt.target.id;
+
+    let updatedOffers;
+    if (evt.target.checked) {
+      updatedOffers = [...this._state.offers, clickedOfferId];
+    } else {
+      updatedOffers = this._state.offers.filter((id) => id !== clickedOfferId);
+    }
+
+    this._setState({
+      ...this._state,
+      offers: updatedOffers
+    });
+  };
+
   static parsePointToState = () => ({
     type: EVENT_POINTS_TYPE[0],
     dateFrom: new Date(),
     dateTo: new Date(),
     basePrice: '',
     destination: {},
+    offers: []
   });
 
   static parseStateToPoint = (state) => ({...state});

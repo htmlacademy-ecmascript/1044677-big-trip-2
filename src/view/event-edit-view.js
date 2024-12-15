@@ -200,7 +200,7 @@ export default class EventEditView extends AbstractStatefulView {
     this.element.querySelector('.event__reset-btn').addEventListener('click', this.#deleteClickHandler);
     this.element.addEventListener('submit', this.#formSubmitHandler);
 
-    this.element.querySelector('.event__input--price').addEventListener('input', this.#priceChangeHandler);
+    this.element.querySelector('.event__input--price').addEventListener('input', this.#priceInputHandler);
     this.element.querySelectorAll('.event__offer-checkbox').forEach((element) =>
       element.addEventListener('change', this.#offerChangeHandler));
   };
@@ -302,7 +302,7 @@ export default class EventEditView extends AbstractStatefulView {
     this.#handleFormSubmit(EventEditView.parseStateToPoint(this._state));
   };
 
-  #priceChangeHandler = (evt) => {
+  #priceInputHandler = (evt) => {
     evt.preventDefault();
     const newPrice = parseInt(evt.target.value, 10);
 

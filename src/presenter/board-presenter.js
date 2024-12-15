@@ -16,6 +16,7 @@ export default class BoardPresenter {
   #filterModel = null;
   #sortComponent = null;
   #eventPointsModel = null;
+  #isCreatingNewPoint = false;
   #noEventPointsComponent = null;
   #newEventButtonComponent = null;
   #currentSortType = SortType.DAY;
@@ -152,7 +153,7 @@ export default class BoardPresenter {
   }
 
   #renderNoEvents() {
-    if(this.points.length === 0) {
+    if(this.points.length === 0 && !this.#isCreatingNewPoint) {
       this.#noEventPointsComponent = new NoEventPointsView(this.#filterModel);
       render(this.#noEventPointsComponent, this.#container);
     }
@@ -180,16 +181,17 @@ export default class BoardPresenter {
   }
 
   #handleNewEventButtonClick = () => {
+    this.#isCreatingNewPoint = true;
     this.#filterModel.setFilter(UpdateType.MAJOR, FilterType.EVERYTHING);
     this.#handleModeChange();
     this.#currentSortType = SortType.DAY;
-    this.#clearBoard({resetSortType: true});
 
     if (this.#noEventPointsComponent) {
       remove(this.#noEventPointsComponent);
       this.#noEventPointsComponent = null;
     }
 
+    this.#clearBoard({resetSortType: true});
     this.#renderSort();
     render(this.#eventListComponent, this.#container);
     this.#renderBoard();
