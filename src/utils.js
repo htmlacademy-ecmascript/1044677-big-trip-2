@@ -2,7 +2,7 @@ import dayjs from 'dayjs';
 import { NoEventsMessage } from './const.js';
 import { FilterType } from './const.js';
 
-function getEventDuration(event) {
+export function getEventDuration(event) {
   return dayjs(event.dateTo).diff(dayjs(event.dateFrom));
 }
 
@@ -45,15 +45,17 @@ export function filterEventPoints(points) {
   };
 
   const result = Object.entries(filteredPoints).map(
-    ([filterType]) => {
-      const count = filteredPoints[filterType].length;
+    ([type]) => {
+      const count = filteredPoints[type].length;
       return {
-        type: FilterType[filterType],
+        type: FilterType[type],
         count: count,
-        placeholder: count === 0 ? NoEventsMessage[FilterType[filterType]] : null
+        placeholder: count === 0 ? NoEventsMessage[FilterType[type]] : null,
+        points: filteredPoints[type],
       };
     });
   return result;
+
 }
 
 export function sortByDate(eventA, eventB) {
@@ -69,4 +71,8 @@ export function sortByTime(eventA, eventB) {
 
 export function sortByPrice(eventB, eventA) {
   return eventA.basePrice - eventB.basePrice;
+}
+
+export function isDateEqual(dateA, dateB) {
+  return (dateA === null && dateB === null) || dayjs(dateA).isSame(dateB, 'D');
 }
