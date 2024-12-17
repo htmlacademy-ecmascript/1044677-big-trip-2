@@ -57,7 +57,6 @@ export default class BoardPresenter {
 
   init() {
     this.#renderTripInfo();
-    this.#renderSort();
     this.#renderBoard();
     this.#attachNewEventButton();
   }
@@ -153,10 +152,11 @@ export default class BoardPresenter {
         this.#renderBoard();
         break;
       case UpdateType.INIT:
-        this.#toggleNewEventButton(false);
         this.#isLoading = false;
         remove(this.#loadingComponent);
+        this.#renderSort();
         this.#renderBoard();
+        this.#toggleNewEventButton(false);
         break;
     }
   };
