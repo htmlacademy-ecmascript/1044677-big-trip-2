@@ -1,5 +1,6 @@
 import SortView from '../view/sort-view.js';
 import { filterEventPoints } from '../utils.js';
+import LoadingView from '../view/loading-view.js';
 import TripInfoView from '../view/trip-info-view.js';
 import EventListView from '../view/event-list-view.js';
 import EventPointPresenter from './event-point-presenter.js';
@@ -16,13 +17,17 @@ export default class BoardPresenter {
   #filterModel = null;
   #sortComponent = null;
   #eventPointsModel = null;
-  #isCreatingNewPoint = false;
   #noEventPointsComponent = null;
   #newEventButtonComponent = null;
-  #currentSortType = SortType.DAY;
-  #eventPointsPresenters = new Map();
+
+  #loadingComponent = new LoadingView();
   #tripInfoComponent = new TripInfoView();
   #eventListComponent = new EventListView();
+
+  #isLoading = true;
+  #isCreatingNewPoint = false;
+  #currentSortType = SortType.DAY;
+  #eventPointsPresenters = new Map();
 
   constructor({container, eventPointsModel, filterModel}) {
     this.#container = container;
@@ -101,6 +106,7 @@ export default class BoardPresenter {
     remove(this.#sortComponent);
     remove(this.#noEventPointsComponent);
     remove(this.#eventListComponent);
+    remove(this.#loadingComponent);
 
     if (resetSortType) {
       this.#currentSortType = SortType.DAY;
@@ -146,6 +152,11 @@ export default class BoardPresenter {
         this.#renderSort();
         this.#renderBoard();
         break;
+      case UpdateType.INIT:
+        this.#isLoading = false;
+        remove(this.#loadingComponent);
+        this.#renderBoard();
+        break;
     }
   };
 
@@ -159,7 +170,17 @@ export default class BoardPresenter {
     render(this.#noEventPointsComponent, this.#container);
   }
 
+
+  #renderLoading() {
+    render(this.#loadingComponent, this.#container);
+  }
+
   #renderBoard() {
+    if (this.#isLoading) {
+      this.#renderLoading();
+      return;
+    }
+
     if (this.#noEventPointsComponent) {
       remove(this.#noEventPointsComponent);
       this.#noEventPointsComponent = null;
@@ -171,6 +192,7 @@ export default class BoardPresenter {
     }
 
     render(this.#eventListComponent, this.#container);
+
 
     for (let i = 0; i < this.points.length; i++) {
       this.#renderEventPoint(this.points[i]);
