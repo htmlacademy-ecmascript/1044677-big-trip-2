@@ -153,6 +153,7 @@ export default class BoardPresenter {
         this.#renderBoard();
         break;
       case UpdateType.INIT:
+        this.#toggleNewEventButton(false);
         this.#isLoading = false;
         remove(this.#loadingComponent);
         this.#renderBoard();
@@ -201,6 +202,7 @@ export default class BoardPresenter {
 
   #attachNewEventButton() {
     this.#newEventButtonComponent = document.querySelector('.trip-main__event-add-btn');
+    this.#newEventButtonComponent.disabled = true;
     this.#newEventButtonComponent.addEventListener('click', this.#handleNewEventButtonClick);
   }
 
@@ -226,4 +228,10 @@ export default class BoardPresenter {
     const newPoint = eventPointPresenter.createPoint();
     this.#eventPointsPresenters.set(newPoint, eventPointPresenter);
   };
+
+  #toggleNewEventButton(isDisabled) {
+    if (this.#newEventButtonComponent) {
+      this.#newEventButtonComponent.disabled = isDisabled;
+    }
+  }
 }

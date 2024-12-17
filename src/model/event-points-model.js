@@ -34,6 +34,7 @@ export default class EventPointsModel extends Observable {
 
       this.#offers = await this.#eventPointsApiService.offers;
 
+      this._notify(UpdateType.INIT);
     } catch(err) {
       this.#points = [];
       this.#destinations = [];
@@ -41,7 +42,6 @@ export default class EventPointsModel extends Observable {
       throw new Error('Сan\'t get data from server');
     }
 
-    this._notify(UpdateType.INIT);
   }
 
 
