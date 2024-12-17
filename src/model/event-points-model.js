@@ -1,4 +1,5 @@
 import Observable from '../framework/observable.js';
+import { UpdateType } from '../const.js';
 
 export default class EventPointsModel extends Observable {
   #eventPointsApiService = null;
@@ -39,6 +40,8 @@ export default class EventPointsModel extends Observable {
       this.#offers = [];
       throw new Error('Сan\'t get data from server');
     }
+
+    this._notify(UpdateType.INIT);
   }
 
 
