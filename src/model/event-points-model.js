@@ -1,22 +1,15 @@
-import { mockOffers } from '../mock/offers.js';
 import Observable from '../framework/observable.js';
-import { mockEventPoints } from '../mock/event-points.js';
-import { mockDestinations } from '../mock/destination-points.js';
 
 export default class EventPointsModel extends Observable {
   #eventPointsApiService = null;
 
-  #offers = mockOffers;
-  #points = mockEventPoints;
-  #destinations = mockDestinations;
+  #offers = [];
+  #points = [];
+  #destinations = [];
 
   constructor({eventPointsApiService}) {
     super();
     this.#eventPointsApiService = eventPointsApiService;
-
-    this.#eventPointsApiService.points.then((points) => {
-      console.log(points.map(this.#adaptToClient));
-    });
   }
 
   get points() {
@@ -30,6 +23,24 @@ export default class EventPointsModel extends Observable {
   get destinations() {
     return this.#destinations;
   }
+
+  async init() {
+    try {
+      const points = await this.#eventPointsApiService.points;
+      this.#points = points.map(this.#adaptToClient);
+
+      this.#destinations = await this.#eventPointsApiService.destinations;
+
+      this.#offers = await this.#eventPointsApiService.offers;
+
+    } catch(err) {
+      this.#points = [];
+      this.#destinations = [];
+      this.#offers = [];
+      throw new Error('Сan\'t get data from server');
+    }
+  }
+
 
   getOffersByType(type) {
     const allOffers = this.offers;

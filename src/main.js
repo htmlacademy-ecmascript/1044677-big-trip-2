@@ -27,3 +27,4 @@ const boardPresenter = new BoardPresenter({
 
 filterPresenter.init();
 boardPresenter.init();
+eventPointsModel.init();
