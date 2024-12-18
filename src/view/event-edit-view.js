@@ -89,7 +89,7 @@ function createDestinationTemplate(destination) {
 }
 
 function createFormEditTemplate(points, offers, checkedOffers, destination, destinationsAll) {
-  const {type, dateFrom, dateTo, basePrice} = points;
+  const {type, dateFrom, dateTo, basePrice, isDisabled, isSaving, isDeleting} = points;
   const {name} = destination;
 
   return (
@@ -136,9 +136,13 @@ function createFormEditTemplate(points, offers, checkedOffers, destination, dest
           <input class="event__input  event__input--price" id="event-price-1" type="text" name="event-price" value=${basePrice}>
         </div>
 
-        <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
-        <button class="event__reset-btn" type="reset">Delete</button>
-        <button class="event__rollup-btn" type="button">
+        <button class="event__save-btn  btn  btn--blue" type="submit" ${isDisabled ? 'disabled' : ''}>
+          ${isSaving ? 'Saving...' : 'Save'}
+        </button>
+        <button class="event__reset-btn" type="reset" ${isDisabled ? 'disabled' : ''}>
+          ${isDeleting ? 'Deleting...' : 'Delete'}
+        </button>
+        <button class="event__rollup-btn" type="button" ${isDisabled ? 'disabled' : ''}>
           <span class="visually-hidden">Open event</span>
         </button>
       </header>
@@ -335,8 +339,19 @@ export default class EventEditView extends AbstractStatefulView {
 
   static parsePointToState = ({point}) => ({
     ...point,
-    offers: point.offers || []
+    offers: point.offers || [],
+    isDisabled: false,
+    isSaving: false,
+    isDeleting: false,
   });
 
-  static parseStateToPoint = (state) => ({...state});
+  static parseStateToPoint = (state) => {
+    const point = {...state};
+    delete point.isDisabled;
+    delete point.isSaving;
+    delete point.isDeleting;
+
+    return point;
+  };
 }
+
