@@ -39,6 +39,7 @@ export default class EventPointsModel extends Observable {
       this.#points = [];
       this.#destinations = [];
       this.#offers = [];
+      this._notify(UpdateType.ERROR);
       throw new Error('Can\'t load data from server');
     }
 

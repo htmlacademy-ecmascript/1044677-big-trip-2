@@ -3,6 +3,7 @@ import { filterEventPoints } from '../utils.js';
 import LoadingView from '../view/loading-view.js';
 import TripInfoView from '../view/trip-info-view.js';
 import EventListView from '../view/event-list-view.js';
+import ErrorLoadView from '../view/error-load-view.js';
 import EventPointPresenter from './event-point-presenter.js';
 import NoEventPointsView from '../view/no-event-points-view.js';
 import { sortByDate, sortByTime, sortByPrice } from '../utils.js';
@@ -16,6 +17,7 @@ export default class BoardPresenter {
   #container = null;
   #filterModel = null;
   #sortComponent = null;
+  #errorComponent = null;
   #eventPointsModel = null;
   #noEventPointsComponent = null;
   #newEventButtonComponent = null;
@@ -134,6 +136,19 @@ export default class BoardPresenter {
 
   #handleModelEvent = (updateType, data) => {
     switch (updateType) {
+      case UpdateType.ERROR:
+        this.#isLoading = false;
+        remove(this.#loadingComponent);
+        this.#errorComponent = new ErrorLoadView();
+        render(this.#errorComponent, this.#container);
+        break;
+      case UpdateType.INIT:
+        this.#isLoading = false;
+        remove(this.#loadingComponent);
+        this.#renderSort();
+        this.#renderBoard();
+        this.#toggleNewEventButton(false);
+        break;
       case UpdateType.PATCH:
         if (this.#eventPointsPresenters.has(data.id)) {
           this.#eventPointsPresenters.get(data.id).init(data);
@@ -150,13 +165,6 @@ export default class BoardPresenter {
         this.#clearBoard({resetSortType: true});
         this.#renderSort();
         this.#renderBoard();
-        break;
-      case UpdateType.INIT:
-        this.#isLoading = false;
-        remove(this.#loadingComponent);
-        this.#renderSort();
-        this.#renderBoard();
-        this.#toggleNewEventButton(false);
         break;
     }
   };
