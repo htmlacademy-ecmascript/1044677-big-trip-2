@@ -82,7 +82,8 @@ export default class EventPointPresenter {
     }
 
     if (this.#mode === Mode.EDITING && prevEventEditFormComponent !== null && prevEventEditFormComponent.element) {
-      replace(this.#eventEditFormComponent, prevEventEditFormComponent);
+      replace(this.#eventPointComponent, prevEventEditFormComponent);
+      this.#mode = Mode.DEFAULT;
     }
 
     remove(prevEventPointComponent);
@@ -106,6 +107,24 @@ export default class EventPointPresenter {
   resetView() {
     if (this.#mode !== Mode.DEFAULT) {
       this.#replaceFormToPoint();
+    }
+  }
+
+  setSaving() {
+    if (this.#mode === Mode.EDITING) {
+      this.#eventEditFormComponent.updateElement({
+        isDisabled: true,
+        isSaving: true,
+      });
+    }
+  }
+
+  setDeleting() {
+    if (this.#mode === Mode.EDITING) {
+      this.#eventEditFormComponent.updateElement({
+        isDisabled: true,
+        isDeleting: true,
+      });
     }
   }
 
@@ -182,7 +201,6 @@ export default class EventPointPresenter {
         UpdateType.MINOR,
         update,
       );
-      this.#replaceFormToPoint();
     }
   };
 
