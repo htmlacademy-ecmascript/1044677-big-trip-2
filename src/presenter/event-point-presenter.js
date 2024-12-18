@@ -1,4 +1,3 @@
-import { nanoid } from 'nanoid';
 import { Mode } from '../const.js';
 import NewPointView from '../view/new-point-view.js';
 import EventEditView from '../view/event-edit-view.js';
@@ -172,7 +171,7 @@ export default class EventPointPresenter {
       this.#handleDataChange(
         UserAction.ADD_POINT,
         UpdateType.MINOR,
-        {id: nanoid(), ...update},
+        update,
       );
       this.#mode = Mode.DEFAULT;
       remove(this.#eventCreateFormComponent);

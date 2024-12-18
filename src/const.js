@@ -1,5 +1,3 @@
-import { nanoid } from 'nanoid';
-
 export const EVENT_POINTS_COUNT = 10;
 export const DATE_FORMAT = {
   monthDay: 'MMM D',
@@ -67,5 +65,5 @@ export const BLANK_POINT = {
   isFavorite: false,
   offers: [],
   type: 'taxi',
-  id: nanoid(),
+  id: '1',
 };
