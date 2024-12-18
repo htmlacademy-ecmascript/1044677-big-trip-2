@@ -1,8 +1,10 @@
 import SortView from '../view/sort-view.js';
+import UiBlocker from '../framework/ui-blocker/ui-blocker.js';
 import { filterEventPoints } from '../utils.js';
 import LoadingView from '../view/loading-view.js';
 import TripInfoView from '../view/trip-info-view.js';
 import EventListView from '../view/event-list-view.js';
+import ErrorLoadView from '../view/error-load-view.js';
 import EventPointPresenter from './event-point-presenter.js';
 import NoEventPointsView from '../view/no-event-points-view.js';
 import { sortByDate, sortByTime, sortByPrice } from '../utils.js';
@@ -12,10 +14,16 @@ import { SortType, UpdateType, UserAction, FilterType } from '../const.js';
 const siteHeaderElement = document.querySelector('.page-header');
 const tripMainElement = siteHeaderElement.querySelector('.trip-main');
 
+const TimeLimit = {
+  LOWER_LIMIT: 350,
+  UPPER_LIMIT: 1000,
+};
+
 export default class BoardPresenter {
   #container = null;
   #filterModel = null;
   #sortComponent = null;
+  #errorComponent = null;
   #eventPointsModel = null;
   #noEventPointsComponent = null;
   #newEventButtonComponent = null;
@@ -28,6 +36,10 @@ export default class BoardPresenter {
   #isCreatingNewPoint = false;
   #currentSortType = SortType.DAY;
   #eventPointsPresenters = new Map();
+  #uiBlocker = new UiBlocker({
+    lowerLimit: TimeLimit.LOWER_LIMIT,
+    upperLimit: TimeLimit.UPPER_LIMIT
+  });
 
   constructor({container, eventPointsModel, filterModel}) {
     this.#container = container;
@@ -116,24 +128,56 @@ export default class BoardPresenter {
     this.#eventPointsPresenters.forEach((presenter) => presenter.resetView());
   };
 
-  #handleViewAction = (actionType, updateType, updatedPoint) => {
+  #handleViewAction = async (actionType, updateType, updatedPoint) => {
+    this.#uiBlocker.block();
+
     switch (actionType) {
       case UserAction.UPDATE_POINT:
-        this.#eventPointsModel.updatePoint(updateType, updatedPoint);
+        this.#eventPointsPresenters.get(updatedPoint.id).setSaving();
+        try {
+          await this.#eventPointsModel.updatePoint(updateType, updatedPoint);
+        } catch (err) {
+          this.#eventPointsPresenters.get(updatedPoint.id).setAborting();
+        }
         break;
       case UserAction.ADD_POINT:
-        this.#eventPointsModel.addPoint(updateType, updatedPoint);
+        this.#eventPointsPresenters.forEach((presenter) => presenter.setSaving());
+        try {
+          await this.#eventPointsModel.addPoint(updateType, updatedPoint);
+        } catch (err) {
+          this.#eventPointsPresenters.forEach((presenter) => presenter.setAborting());
+        }
         this.#isCreatingNewPoint = false;
         break;
       case UserAction.DELETE_POINT:
-        this.#eventPointsModel.deletePoint(updateType, updatedPoint);
+        this.#eventPointsPresenters.get(updatedPoint.id).setDeleting();
+        try {
+          await this.#eventPointsModel.deletePoint(updateType, updatedPoint);
+        } catch (err) {
+          this.#eventPointsPresenters.get(updatedPoint.id).setAborting();
+        }
         this.#isCreatingNewPoint = false;
         break;
     }
+
+    this.#uiBlocker.unblock();
   };
 
   #handleModelEvent = (updateType, data) => {
     switch (updateType) {
+      case UpdateType.ERROR:
+        this.#isLoading = false;
+        remove(this.#loadingComponent);
+        this.#errorComponent = new ErrorLoadView();
+        render(this.#errorComponent, this.#container);
+        break;
+      case UpdateType.INIT:
+        this.#isLoading = false;
+        remove(this.#loadingComponent);
+        this.#renderSort();
+        this.#renderBoard();
+        this.#toggleNewEventButton(false);
+        break;
       case UpdateType.PATCH:
         if (this.#eventPointsPresenters.has(data.id)) {
           this.#eventPointsPresenters.get(data.id).init(data);
@@ -150,13 +194,6 @@ export default class BoardPresenter {
         this.#clearBoard({resetSortType: true});
         this.#renderSort();
         this.#renderBoard();
-        break;
-      case UpdateType.INIT:
-        this.#isLoading = false;
-        remove(this.#loadingComponent);
-        this.#renderSort();
-        this.#renderBoard();
-        this.#toggleNewEventButton(false);
         break;
     }
   };
@@ -202,7 +239,7 @@ export default class BoardPresenter {
 
   #attachNewEventButton() {
     this.#newEventButtonComponent = document.querySelector('.trip-main__event-add-btn');
-    this.#newEventButtonComponent.disabled = true;
+    this.#toggleNewEventButton(true);
     this.#newEventButtonComponent.addEventListener('click', this.#handleNewEventButtonClick);
   }
 

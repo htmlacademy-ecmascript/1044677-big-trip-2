@@ -1,4 +1,3 @@
-import { nanoid } from 'nanoid';
 import { Mode } from '../const.js';
 import NewPointView from '../view/new-point-view.js';
 import EventEditView from '../view/event-edit-view.js';
@@ -83,7 +82,8 @@ export default class EventPointPresenter {
     }
 
     if (this.#mode === Mode.EDITING && prevEventEditFormComponent !== null && prevEventEditFormComponent.element) {
-      replace(this.#eventEditFormComponent, prevEventEditFormComponent);
+      replace(this.#eventPointComponent, prevEventEditFormComponent);
+      this.#mode = Mode.DEFAULT;
     }
 
     remove(prevEventPointComponent);
@@ -108,6 +108,42 @@ export default class EventPointPresenter {
     if (this.#mode !== Mode.DEFAULT) {
       this.#replaceFormToPoint();
     }
+  }
+
+  setSaving() {
+    if (this.#mode === Mode.EDITING) {
+      this.#eventEditFormComponent.updateElement({
+        isDisabled: true,
+        isSaving: true,
+      });
+    }
+  }
+
+  setDeleting() {
+    if (this.#mode === Mode.EDITING) {
+      this.#eventEditFormComponent.updateElement({
+        isDisabled: true,
+        isDeleting: true,
+      });
+    }
+  }
+
+  setAborting() {
+    if (this.#mode === Mode.DEFAULT) {
+      this.#eventPointComponent.shake();
+      return;
+    }
+
+    const resetFormState = () => {
+      this.#eventEditFormComponent.updateElement({
+        isDisabled: false,
+        isSaving: false,
+        isDeleting: false,
+      });
+
+    };
+
+    this.#eventEditFormComponent.shake(resetFormState);
   }
 
   #createPoint = () => {
@@ -172,7 +208,7 @@ export default class EventPointPresenter {
       this.#handleDataChange(
         UserAction.ADD_POINT,
         UpdateType.MINOR,
-        {id: nanoid(), ...update},
+        update,
       );
       this.#mode = Mode.DEFAULT;
       remove(this.#eventCreateFormComponent);
@@ -183,7 +219,6 @@ export default class EventPointPresenter {
         UpdateType.MINOR,
         update,
       );
-      this.#replaceFormToPoint();
     }
   };
 
