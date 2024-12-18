@@ -1,4 +1,5 @@
 import SortView from '../view/sort-view.js';
+import UiBlocker from '../framework/ui-blocker/ui-blocker.js';
 import { filterEventPoints } from '../utils.js';
 import LoadingView from '../view/loading-view.js';
 import TripInfoView from '../view/trip-info-view.js';
@@ -12,6 +13,11 @@ import { SortType, UpdateType, UserAction, FilterType } from '../const.js';
 
 const siteHeaderElement = document.querySelector('.page-header');
 const tripMainElement = siteHeaderElement.querySelector('.trip-main');
+
+const TimeLimit = {
+  LOWER_LIMIT: 350,
+  UPPER_LIMIT: 1000,
+};
 
 export default class BoardPresenter {
   #container = null;
@@ -30,6 +36,10 @@ export default class BoardPresenter {
   #isCreatingNewPoint = false;
   #currentSortType = SortType.DAY;
   #eventPointsPresenters = new Map();
+  #uiBlocker = new UiBlocker({
+    lowerLimit: TimeLimit.LOWER_LIMIT,
+    upperLimit: TimeLimit.UPPER_LIMIT
+  });
 
   constructor({container, eventPointsModel, filterModel}) {
     this.#container = container;
@@ -119,6 +129,8 @@ export default class BoardPresenter {
   };
 
   #handleViewAction = async (actionType, updateType, updatedPoint) => {
+    this.#uiBlocker.block();
+
     switch (actionType) {
       case UserAction.UPDATE_POINT:
         this.#eventPointsPresenters.get(updatedPoint.id).setSaving();
@@ -147,6 +159,8 @@ export default class BoardPresenter {
         this.#isCreatingNewPoint = false;
         break;
     }
+
+    this.#uiBlocker.unblock();
   };
 
   #handleModelEvent = (updateType, data) => {
