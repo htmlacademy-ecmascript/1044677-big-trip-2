@@ -14,12 +14,17 @@ function createTypeTemplate(type) {
   );
 }
 
-function createOfferTemplate(offer, checkedOffer) {
+function createOfferTemplate(offer, checkedOffer, isDisabled) {
   const {id, title, price} = offer;
   const isChecked = checkedOffer.map((item) => item.id).includes(id) ? 'checked' : '';
   return (
     `<div class="event__offer-selector">
-      <input class="event__offer-checkbox  visually-hidden" id=${id} type="checkbox" name=${id} ${isChecked}>
+      <input class="event__offer-checkbox  visually-hidden"
+             id=${id}
+             type="checkbox"
+             name=${id}
+             ${isChecked}
+             ${isDisabled ? 'disabled' : ''}>
       <label class="event__offer-label" for=${id}>
         <span class="event__offer-title">${title}</span>
         &plus;&euro;&nbsp;
@@ -29,14 +34,14 @@ function createOfferTemplate(offer, checkedOffer) {
   );
 }
 
-function createOffersListTemplate({offers}, checkedOffers) {
+function createOffersListTemplate({offers}, checkedOffers, isDisabled) {
   if (offers.length !== 0) {
     return (
       `<section class="event__section  event__section--offers">
         <h3 class="event__section-title  event__section-title--offers">Offers</h3>
 
         <div class="event__available-offers">
-          ${offers.map((offer) => createOfferTemplate(offer, checkedOffers)).join('')}
+          ${offers.map((offer) => createOfferTemplate(offer, checkedOffers, isDisabled)).join('')}
         </div>
       </section>`
     );
@@ -114,7 +119,7 @@ function createFormEditTemplate(points, offers, checkedOffers, destination, dest
           <label class="event__label  event__type-output" for="event-destination-1">
             ${createUpperCase(type)}
           </label>
-          <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value='${name}' list="destination-list-1" required>
+          <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value='${name}' list="destination-list-1" required ${isDisabled ? 'disabled' : ''}>
           <datalist id="destination-list-1">
           ${createDestinationListTemplate(destinationsAll)}
           </datalist>
@@ -122,10 +127,10 @@ function createFormEditTemplate(points, offers, checkedOffers, destination, dest
 
         <div class="event__field-group  event__field-group--time">
           <label class="visually-hidden" for="event-start-time-1">From</label>
-          <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="${humanizeEventDate(dateFrom, DATE_FORMAT.fullDate)}">
+          <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="${humanizeEventDate(dateFrom, DATE_FORMAT.fullDate)}" ${isDisabled ? 'disabled' : ''}>
           &mdash;
           <label class="visually-hidden" for="event-end-time-1">To</label>
-          <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="${humanizeEventDate(dateTo, DATE_FORMAT.fullDate)}">
+          <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="${humanizeEventDate(dateTo, DATE_FORMAT.fullDate)}" ${isDisabled ? 'disabled' : ''}>
         </div>
 
         <div class="event__field-group  event__field-group--price">
@@ -133,7 +138,7 @@ function createFormEditTemplate(points, offers, checkedOffers, destination, dest
             <span class="visually-hidden">Price</span>
             &euro;
           </label>
-          <input class="event__input  event__input--price" id="event-price-1" type="text" name="event-price" value=${basePrice}>
+          <input class="event__input  event__input--price" id="event-price-1" type="text" name="event-price" value=${basePrice} ${isDisabled ? 'disabled' : ''}>
         </div>
 
         <button class="event__save-btn  btn  btn--blue" type="submit" ${isDisabled ? 'disabled' : ''}>
@@ -147,7 +152,7 @@ function createFormEditTemplate(points, offers, checkedOffers, destination, dest
         </button>
       </header>
       <section class="event__details">
-        ${createOffersListTemplate(offers, checkedOffers)}
+        ${createOffersListTemplate(offers, checkedOffers, isDisabled)}
         ${createDestinationTemplate(destination, destinationsAll)}
       </section>
     </form>`

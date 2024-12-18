@@ -121,13 +121,16 @@ export default class BoardPresenter {
   #handleViewAction = (actionType, updateType, updatedPoint) => {
     switch (actionType) {
       case UserAction.UPDATE_POINT:
+        this.#eventPointsPresenters.get(updatedPoint.id).setSaving();
         this.#eventPointsModel.updatePoint(updateType, updatedPoint);
         break;
       case UserAction.ADD_POINT:
+        this.#eventPointsPresenters.forEach((presenter) => presenter.setSaving());
         this.#eventPointsModel.addPoint(updateType, updatedPoint);
         this.#isCreatingNewPoint = false;
         break;
       case UserAction.DELETE_POINT:
+        this.#eventPointsPresenters.get(updatedPoint.id).setDeleting();
         this.#eventPointsModel.deletePoint(updateType, updatedPoint);
         this.#isCreatingNewPoint = false;
         break;
