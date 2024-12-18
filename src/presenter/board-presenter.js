@@ -202,7 +202,7 @@ export default class BoardPresenter {
 
   #attachNewEventButton() {
     this.#newEventButtonComponent = document.querySelector('.trip-main__event-add-btn');
-    this.#newEventButtonComponent.disabled = true;
+    this.#toggleNewEventButton(true);
     this.#newEventButtonComponent.addEventListener('click', this.#handleNewEventButtonClick);
   }
 
