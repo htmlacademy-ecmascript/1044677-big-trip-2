@@ -128,6 +128,24 @@ export default class EventPointPresenter {
     }
   }
 
+  setAborting() {
+    if (this.#mode === Mode.DEFAULT) {
+      this.#eventPointComponent.shake();
+      return;
+    }
+
+    const resetFormState = () => {
+      this.#eventEditFormComponent.updateElement({
+        isDisabled: false,
+        isSaving: false,
+        isDeleting: false,
+      });
+
+    };
+
+    this.#eventEditFormComponent.shake(resetFormState);
+  }
+
   #createPoint = () => {
     if (this.#eventEditFormComponent !== null) {
       return;

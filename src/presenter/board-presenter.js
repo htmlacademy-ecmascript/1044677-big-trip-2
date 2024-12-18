@@ -118,20 +118,32 @@ export default class BoardPresenter {
     this.#eventPointsPresenters.forEach((presenter) => presenter.resetView());
   };
 
-  #handleViewAction = (actionType, updateType, updatedPoint) => {
+  #handleViewAction = async (actionType, updateType, updatedPoint) => {
     switch (actionType) {
       case UserAction.UPDATE_POINT:
         this.#eventPointsPresenters.get(updatedPoint.id).setSaving();
-        this.#eventPointsModel.updatePoint(updateType, updatedPoint);
+        try {
+          await this.#eventPointsModel.updatePoint(updateType, updatedPoint);
+        } catch (err) {
+          this.#eventPointsPresenters.get(updatedPoint.id).setAborting();
+        }
         break;
       case UserAction.ADD_POINT:
         this.#eventPointsPresenters.forEach((presenter) => presenter.setSaving());
-        this.#eventPointsModel.addPoint(updateType, updatedPoint);
+        try {
+          await this.#eventPointsModel.addPoint(updateType, updatedPoint);
+        } catch (err) {
+          this.#eventPointsPresenters.forEach((presenter) => presenter.setAborting());
+        }
         this.#isCreatingNewPoint = false;
         break;
       case UserAction.DELETE_POINT:
         this.#eventPointsPresenters.get(updatedPoint.id).setDeleting();
-        this.#eventPointsModel.deletePoint(updateType, updatedPoint);
+        try {
+          await this.#eventPointsModel.deletePoint(updateType, updatedPoint);
+        } catch (err) {
+          this.#eventPointsPresenters.get(updatedPoint.id).setAborting();
+        }
         this.#isCreatingNewPoint = false;
         break;
     }
