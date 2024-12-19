@@ -4,6 +4,7 @@ import {humanizeEventDate, createUpperCase} from '../utils.js';
 import flatpickr from 'flatpickr';
 import he from 'he';
 import 'flatpickr/dist/flatpickr.min.css';
+import dayjs from 'dayjs';
 
 function createTypeTemplate(type) {
   return (
@@ -313,10 +314,11 @@ export default class NewPointView extends AbstractStatefulView {
   static parsePointToState = () => ({
     type: EVENT_POINTS_TYPE[0],
     dateFrom: new Date(),
-    dateTo: new Date(),
+    dateTo: dayjs(new Date()).add(1, 'hour').toDate(),
     basePrice: '',
     destination: {},
-    offers: []
+    offers: [],
+    isFavorite: false
   });
 
   static parseStateToPoint = (state) => ({...state});
