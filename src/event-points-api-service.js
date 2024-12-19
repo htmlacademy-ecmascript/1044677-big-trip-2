@@ -1,4 +1,5 @@
 import ApiService from './framework/api-service.js';
+import dayjs from 'dayjs';
 
 const Method = {
   GET: 'GET',
@@ -68,9 +69,10 @@ export default class EventPointsApiService extends ApiService {
     const adaptedPoint = {
       ...point,
       'base_price': Number(point.basePrice),
-      'date_from': point.dateFrom instanceof Date ? point.dateFrom.toISOString() : null,
-      'date_to': point.dateTo instanceof Date ? point.dateTo.toISOString() : null,
+      'date_from': dayjs(point.dateFrom).toISOString(),
+      'date_to': dayjs(point.dateTo).add(1, 'hour').toISOString(),
       'is_favorite': point.isFavorite,
+      'destination': point.destination || null,
     };
 
     delete adaptedPoint.basePrice;

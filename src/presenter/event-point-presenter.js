@@ -130,7 +130,9 @@ export default class EventPointPresenter {
 
   setAborting() {
     if (this.#mode === Mode.DEFAULT) {
-      this.#eventPointComponent.shake();
+      if (this.#eventPointComponent) {
+        this.#eventPointComponent.shake();
+      }
       return;
     }
 
@@ -140,10 +142,11 @@ export default class EventPointPresenter {
         isSaving: false,
         isDeleting: false,
       });
-
     };
 
-    this.#eventEditFormComponent.shake(resetFormState);
+    if (this.#eventEditFormComponent) {
+      this.#eventEditFormComponent.shake(resetFormState);
+    }
   }
 
   #createPoint = () => {
@@ -210,9 +213,6 @@ export default class EventPointPresenter {
         UpdateType.MINOR,
         update,
       );
-      this.#mode = Mode.DEFAULT;
-      remove(this.#eventCreateFormComponent);
-      this.#eventCreateFormComponent = null;
     } else {
       this.#handleDataChange(
         UserAction.UPDATE_POINT,

@@ -1,3 +1,5 @@
+import dayjs from 'dayjs';
+
 export const EVENT_POINTS_COUNT = 10;
 export const DATE_FORMAT = {
   monthDay: 'MMM D',
@@ -59,11 +61,10 @@ export const Mode = {
 
 export const BLANK_POINT = {
   basePrice: 0,
-  dateFrom: new Date(),
-  dateTo: new Date(),
-  destination: '1',
+  dateFrom: dayjs().toDate(),
+  dateTo: dayjs().add(1, 'hour').toDate(),
+  destination: null,
   isFavorite: false,
   offers: [],
-  type: 'taxi',
-  id: '1',
+  type: 'taxi'
 };
