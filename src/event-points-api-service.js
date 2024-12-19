@@ -65,7 +65,6 @@ export default class EventPointsApiService extends ApiService {
   }
 
   #adaptToServer(point) {
-    console.log(point);
     const adaptedPoint = {
       ...point,
       'base_price': Number(point.basePrice),
