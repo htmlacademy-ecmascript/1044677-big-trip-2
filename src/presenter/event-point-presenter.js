@@ -147,6 +147,10 @@ export default class EventPointPresenter {
     if (this.#eventEditFormComponent) {
       this.#eventEditFormComponent.shake(resetFormState);
     }
+
+    if (this.#mode === Mode.NEW && this.#eventCreateFormComponent) {
+      this.#eventCreateFormComponent.shake();
+    }
   }
 
   #createPoint = () => {

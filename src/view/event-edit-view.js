@@ -345,7 +345,6 @@ export default class EventEditView extends AbstractStatefulView {
   static parsePointToState = ({point}) => ({
     ...point,
     offers: point.offers || [],
-    isFavorite: false,
     isDisabled: false,
     isSaving: false,
     isDeleting: false,
