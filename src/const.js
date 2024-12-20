@@ -1,4 +1,3 @@
-export const EVENT_POINTS_COUNT = 10;
 export const DATE_FORMAT = {
   monthDay: 'MMM D',
   fullDate: 'DD/MM/YY HH:mm',
