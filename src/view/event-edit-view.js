@@ -1,8 +1,8 @@
 import he from 'he';
 import flatpickr from 'flatpickr';
 import 'flatpickr/dist/flatpickr.min.css';
-import {DATE_FORMAT, EVENT_POINTS_TYPE} from '../const.js';
-import {humanizeEventDate, createUpperCase} from '../utils.js';
+import { DATE_FORMAT, EVENT_POINTS_TYPE } from '../const.js';
+import { humanizeEventDate, createUpperCase } from '../utils.js';
 import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
 
 function createTypeTemplate(type) {
@@ -359,4 +359,3 @@ export default class EventEditView extends AbstractStatefulView {
     return point;
   };
 }
-

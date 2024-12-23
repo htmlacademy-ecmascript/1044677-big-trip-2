@@ -42,9 +42,7 @@ export default class EventPointsModel extends Observable {
       this._notify(UpdateType.ERROR);
       throw new Error('Can\'t load data from server');
     }
-
   }
-
 
   getOffersByType(type) {
     const allOffers = this.offers;
