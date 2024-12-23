@@ -1,8 +1,8 @@
 import he from 'he';
 import flatpickr from 'flatpickr';
 import 'flatpickr/dist/flatpickr.min.css';
-import {DATE_FORMAT, EVENT_POINTS_TYPE} from '../const.js';
-import {humanizeEventDate, createUpperCase} from '../utils.js';
+import { DATE_FORMAT, EVENT_POINTS_TYPE } from '../const.js';
+import { humanizeEventDate, createUpperCase } from '../utils.js';
 import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
 
 function createTypeTemplate(type) {
@@ -345,7 +345,6 @@ export default class EventEditView extends AbstractStatefulView {
   static parsePointToState = ({point}) => ({
     ...point,
     offers: point.offers || [],
-    isFavorite: false,
     isDisabled: false,
     isSaving: false,
     isDeleting: false,
@@ -360,4 +359,3 @@ export default class EventEditView extends AbstractStatefulView {
     return point;
   };
 }
-

@@ -1,17 +1,5 @@
+import { EndPoint, Method } from './const.js';
 import ApiService from './framework/api-service.js';
-
-const Method = {
-  GET: 'GET',
-  PUT: 'PUT',
-  POST: 'POST',
-  DELETE: 'DELETE',
-};
-
-const EndPoint = {
-  POINTS: 'points',
-  OFFERS: 'offers',
-  DESTINATIONS: 'destinations',
-};
 
 export default class EventPointsApiService extends ApiService {
   get points() {

@@ -71,7 +71,6 @@ export default class EventPointPresenter {
       }
     });
 
-
     if (prevEventPointComponent === null || prevEventEditFormComponent === null) {
       render(this.#eventPointComponent, this.#container);
       return;
@@ -102,7 +101,6 @@ export default class EventPointPresenter {
       remove(this.#eventCreateFormComponent);
     }
   }
-
 
   resetView() {
     if (this.#mode !== Mode.DEFAULT) {
@@ -146,6 +144,10 @@ export default class EventPointPresenter {
 
     if (this.#eventEditFormComponent) {
       this.#eventEditFormComponent.shake(resetFormState);
+    }
+
+    if (this.#mode === Mode.NEW && this.#eventCreateFormComponent) {
+      this.#eventCreateFormComponent.shake();
     }
   }
 

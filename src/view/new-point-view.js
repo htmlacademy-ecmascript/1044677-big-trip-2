@@ -1,10 +1,10 @@
-import {DATE_FORMAT, EVENT_POINTS_TYPE} from '../const.js';
-import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
-import {humanizeEventDate, createUpperCase} from '../utils.js';
-import flatpickr from 'flatpickr';
 import he from 'he';
-import 'flatpickr/dist/flatpickr.min.css';
 import dayjs from 'dayjs';
+import flatpickr from 'flatpickr';
+import 'flatpickr/dist/flatpickr.min.css';
+import {DATE_FORMAT, EVENT_POINTS_TYPE} from '../const.js';
+import {humanizeEventDate, createUpperCase} from '../utils.js';
+import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
 
 function createTypeTemplate(type) {
   return (
