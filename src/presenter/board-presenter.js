@@ -1,23 +1,15 @@
 import SortView from '../view/sort-view.js';
-import UiBlocker from '../framework/ui-blocker/ui-blocker.js';
 import { filterEventPoints } from '../utils.js';
 import LoadingView from '../view/loading-view.js';
-import TripInfoView from '../view/trip-info-view.js';
 import EventListView from '../view/event-list-view.js';
 import ErrorLoadView from '../view/error-load-view.js';
 import EventPointPresenter from './event-point-presenter.js';
+import UiBlocker from '../framework/ui-blocker/ui-blocker.js';
 import NoEventPointsView from '../view/no-event-points-view.js';
 import { sortByDate, sortByTime, sortByPrice } from '../utils.js';
+import TripInfoPresenter from '../presenter/trip-info-presenter.js';
 import { remove, render, RenderPosition } from '../framework/render.js';
-import { SortType, UpdateType, UserAction, FilterType } from '../const.js';
-
-const siteHeaderElement = document.querySelector('.page-header');
-const tripMainElement = siteHeaderElement.querySelector('.trip-main');
-
-const TimeLimit = {
-  LOWER_LIMIT: 350,
-  UPPER_LIMIT: 1000,
-};
+import { SortType, UpdateType, UserAction, FilterType, TimeLimit } from '../const.js';
 
 export default class BoardPresenter {
   #container = null;
@@ -25,12 +17,13 @@ export default class BoardPresenter {
   #sortComponent = null;
   #errorComponent = null;
   #eventPointsModel = null;
+  #tripInfoPresenter = null;
   #noEventPointsComponent = null;
   #newEventButtonComponent = null;
 
   #loadingComponent = new LoadingView();
-  #tripInfoComponent = new TripInfoView();
   #eventListComponent = new EventListView();
+
 
   #isLoading = true;
   #isCreatingNewPoint = false;
@@ -43,8 +36,13 @@ export default class BoardPresenter {
 
   constructor({container, eventPointsModel, filterModel}) {
     this.#container = container;
-    this.#eventPointsModel = eventPointsModel;
     this.#filterModel = filterModel;
+    this.#eventPointsModel = eventPointsModel;
+
+    this.#tripInfoPresenter = new TripInfoPresenter({
+      container: document.querySelector('.trip-main'),
+      eventPointsModel: this.#eventPointsModel
+    });
 
     this.#eventPointsModel.addObserver(this.#handleModelEvent);
     this.#filterModel.addObserver(this.#handleModelEvent);
@@ -68,7 +66,6 @@ export default class BoardPresenter {
   }
 
   init() {
-    this.#renderTripInfo();
     this.#renderBoard();
     this.#attachNewEventButton();
   }
@@ -84,10 +81,6 @@ export default class BoardPresenter {
 
     eventPointPresenter.init(point);
     this.#eventPointsPresenters.set(point.id, eventPointPresenter);
-  }
-
-  #renderTripInfo() {
-    render(this.#tripInfoComponent, tripMainElement, RenderPosition.AFTERBEGIN);
   }
 
   #handleSortTypeChange = (sortType) => {
@@ -174,6 +167,7 @@ export default class BoardPresenter {
       case UpdateType.INIT:
         this.#isLoading = false;
         remove(this.#loadingComponent);
+        this.#tripInfoPresenter.init(this.#eventPointsModel.points);
         this.#renderSort();
         this.#renderBoard();
         this.#toggleNewEventButton(false);
@@ -208,7 +202,6 @@ export default class BoardPresenter {
     render(this.#noEventPointsComponent, this.#container);
   }
 
-
   #renderLoading() {
     render(this.#loadingComponent, this.#container);
   }
@@ -231,7 +224,6 @@ export default class BoardPresenter {
 
     render(this.#eventListComponent, this.#container);
 
-
     for (let i = 0; i < this.points.length; i++) {
       this.#renderEventPoint(this.points[i]);
     }
@@ -248,7 +240,6 @@ export default class BoardPresenter {
     this.#filterModel.setFilter(UpdateType.MAJOR, FilterType.EVERYTHING);
     this.#handleModeChange();
     this.#currentSortType = SortType.DAY;
-
     this.#clearBoard({resetSortType: true});
     this.#renderSort();
     render(this.#eventListComponent, this.#container);

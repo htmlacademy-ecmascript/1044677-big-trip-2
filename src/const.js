@@ -1,6 +1,11 @@
 export const AUTHORIZATION = 'Basic nxcv1w790ik756h778xfz';
 export const END_POINT = 'https://22.objects.htmlacademy.pro/big-trip';
 
+export const TimeLimit = {
+  LOWER_LIMIT: 350,
+  UPPER_LIMIT: 1000,
+};
+
 export const DATE_FORMAT = {
   dayMonth: 'DD MMM',
   monthDay: 'MMM D',
