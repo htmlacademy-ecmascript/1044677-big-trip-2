@@ -1,5 +1,5 @@
-import Observable from '../framework/observable.js';
 import { UpdateType } from '../const.js';
+import Observable from '../framework/observable.js';
 
 export default class EventPointsModel extends Observable {
   #eventPointsApiService = null;
@@ -40,7 +40,6 @@ export default class EventPointsModel extends Observable {
       this.#destinations = [];
       this.#offers = [];
       this._notify(UpdateType.ERROR);
-      throw new Error('Can\'t load data from server');
     }
   }
 

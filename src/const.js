@@ -1,3 +1,5 @@
+import dayjs from 'dayjs';
+
 export const AUTHORIZATION = 'Basic nxcv1w790ik756h778xfz';
 export const END_POINT = 'https://22.objects.htmlacademy.pro/big-trip';
 
@@ -16,8 +18,8 @@ export const DATE_FORMAT = {
 export const EVENT_POINTS_TYPE = [
   'taxi',
   'bus',
-  'train',
   'ship',
+  'train',
   'drive',
   'flight',
   'check-in',
@@ -68,11 +70,11 @@ export const Mode = {
 export const BLANK_POINT = {
   basePrice: 0,
   dateFrom: new Date(),
-  dateTo: new Date(),
+  dateTo: dayjs(new Date()).add(1, 'hour').toDate(),
   destination: null,
   isFavorite: false,
   offers: [],
-  type: 'taxi'
+  type: 'flight'
 };
 
 export const Method = {

@@ -76,7 +76,7 @@ export default class BoardPresenter {
       eventPointsModel: this.#eventPointsModel,
       filterModel: this.#filterModel,
       onDataChange: this.#handleViewAction,
-      onModeChange: this.#handleModeChange
+      onModeChange: this.#handleModeChange,
     });
 
     eventPointPresenter.init(point);
@@ -137,10 +137,12 @@ export default class BoardPresenter {
         this.#eventPointsPresenters.forEach((presenter) => presenter.setSaving());
         try {
           await this.#eventPointsModel.addPoint(updateType, updatedPoint);
+          this.#toggleNewEventButton(false);
         } catch (err) {
           this.#eventPointsPresenters.forEach((presenter) => presenter.setAborting());
+        } finally {
+          this.#isCreatingNewPoint = false;
         }
-        this.#isCreatingNewPoint = false;
         break;
       case UserAction.DELETE_POINT:
         this.#eventPointsPresenters.get(updatedPoint.id).setDeleting();
@@ -236,6 +238,7 @@ export default class BoardPresenter {
   }
 
   #handleNewEventButtonClick = () => {
+    this.#toggleNewEventButton(true);
     this.#isCreatingNewPoint = true;
     this.#filterModel.setFilter(UpdateType.MAJOR, FilterType.EVERYTHING);
     this.#handleModeChange();
@@ -250,7 +253,13 @@ export default class BoardPresenter {
       eventPointsModel: this.#eventPointsModel,
       filterModel: this.#filterModel,
       onDataChange: this.#handleViewAction,
-      onModeChange: this.#handleModeChange
+      onModeChange: this.#handleModeChange,
+      onToggleButton: () => {
+        this.#isCreatingNewPoint = false;
+        this.#toggleNewEventButton(false);
+        this.#clearEventPointsList();
+        this.#renderBoard();
+      }
     });
 
     const newPoint = eventPointPresenter.createPoint();

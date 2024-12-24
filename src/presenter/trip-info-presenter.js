@@ -38,6 +38,7 @@ export default class TripInfoPresenter {
   }
 
   #tripDates(points) {
+    const sortedPoints = [...points].sort((a, b) => a.dateFrom - b.dateFrom);
     if (points.length === 0) {
       return {
         startDate: null,
@@ -46,8 +47,8 @@ export default class TripInfoPresenter {
     }
 
     return {
-      startDate: points[0].dateFrom,
-      endDate: points[points.length - 1].dateTo
+      startDate: sortedPoints[0].dateFrom,
+      endDate: sortedPoints[points.length - 1].dateTo
     };
   }
 
@@ -69,30 +70,44 @@ export default class TripInfoPresenter {
   }
 
   init(points) {
+    if (!points || points.length === 0) {
+      if (this.#tripInfoComponent) {
+        remove(this.#tripInfoComponent);
+        this.#tripInfoComponent = null;
+      }
+      return;
+    }
+
     this.#destinations = this.#eventPointsModel.destinations;
     this.#offers = this.#eventPointsModel.offers;
 
-    this.#tripInfoComponent = new TripInfoView({
-      title: this.#tripTitleData(points).title,
-      tripDates: this.#tripDates(points),
-      totalCost: this.#getTotalPrice(points)
-    });
-    render(this.#tripInfoComponent, this.#container, RenderPosition.AFTERBEGIN);
-  }
-
-  destroy() {
-    remove(this.#tripInfoComponent);
-    this.#eventPointsModel.removeObserver(this.#handleModelEvent);
-  }
-
-  #handleModelEvent = () => {
-    if (this.#tripInfoComponent) {
-      const points = this.#eventPointsModel.points;
+    if (!this.#tripInfoComponent) {
+      this.#tripInfoComponent = new TripInfoView({
+        title: this.#tripTitleData(points).title,
+        tripDates: this.#tripDates(points),
+        totalCost: this.#getTotalPrice(points)
+      });
+      render(this.#tripInfoComponent, this.#container, RenderPosition.AFTERBEGIN);
+    } else {
       this.#tripInfoComponent.updateData({
         title: this.#tripTitleData(points).title,
         tripDates: this.#tripDates(points),
         totalCost: this.#getTotalPrice(points)
       });
     }
+  }
+
+  #handleModelEvent = () => {
+    const points = this.#eventPointsModel.points;
+
+    if (!points || points.length === 0) {
+      if (this.#tripInfoComponent) {
+        remove(this.#tripInfoComponent);
+        this.#tripInfoComponent = null;
+      }
+      return;
+    }
+
+    this.init(points);
   };
 }
