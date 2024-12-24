@@ -9,6 +9,7 @@ export default class EventPointPresenter {
   #point = null;
   #container = null;
   #mode = Mode.DEFAULT;
+  #onToggleButton = null;
   #handleDataChange = null;
   #eventPointsModel = null;
   #handleModeChange = null;
@@ -17,11 +18,12 @@ export default class EventPointPresenter {
   #eventEditFormComponent = null;
   #eventCreateFormComponent = null;
 
-  constructor({container, eventPointsModel, onDataChange, onModeChange}) {
+  constructor({container, eventPointsModel, onDataChange, onModeChange, onToggleButton}) {
     this.#container = container;
-    this.#eventPointsModel = eventPointsModel;
     this.#handleDataChange = onDataChange;
     this.#handleModeChange = onModeChange;
+    this.#onToggleButton = onToggleButton;
+    this.#eventPointsModel = eventPointsModel;
   }
 
   init(point) {
@@ -111,8 +113,8 @@ export default class EventPointPresenter {
   setSaving() {
     if (this.#mode === Mode.EDITING) {
       this.#eventEditFormComponent.updateElement({
-        isDisabled: true,
         isSaving: true,
+        isDisabled: false,
       });
     }
   }
@@ -120,20 +122,13 @@ export default class EventPointPresenter {
   setDeleting() {
     if (this.#mode === Mode.EDITING) {
       this.#eventEditFormComponent.updateElement({
-        isDisabled: true,
         isDeleting: true,
+        isDisabled: false,
       });
     }
   }
 
   setAborting() {
-    if (this.#mode === Mode.DEFAULT) {
-      if (this.#eventPointComponent) {
-        this.#eventPointComponent.shake();
-      }
-      return;
-    }
-
     const resetFormState = () => {
       this.#eventEditFormComponent.updateElement({
         isDisabled: false,
@@ -142,7 +137,14 @@ export default class EventPointPresenter {
       });
     };
 
-    if (this.#eventEditFormComponent) {
+    if (this.#mode === Mode.DEFAULT) {
+      if (this.#eventPointComponent) {
+        this.#eventPointComponent.shake();
+      }
+      return;
+    }
+
+    if (this.#mode === Mode.EDITING) {
       this.#eventEditFormComponent.shake(resetFormState);
     }
 
@@ -194,6 +196,7 @@ export default class EventPointPresenter {
       remove(this.#eventCreateFormComponent);
       this.#eventCreateFormComponent = null;
     } else {
+      this.#eventEditFormComponent.reset(this.#point);
       replace(this.#eventPointComponent, this.#eventEditFormComponent);
     }
     this.#mode = Mode.DEFAULT;
@@ -243,5 +246,6 @@ export default class EventPointPresenter {
       document.removeEventListener('keydown', this.#escKeyDownHandler);
     }
     this.#mode = Mode.DEFAULT;
+    this.#onToggleButton();
   };
 }
