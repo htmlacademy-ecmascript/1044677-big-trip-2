@@ -19,9 +19,9 @@ export default class EventPointPresenter {
 
   constructor({container, eventPointsModel, onDataChange, onModeChange}) {
     this.#container = container;
-    this.#eventPointsModel = eventPointsModel;
-    this.#handleDataChange = onDataChange;
     this.#handleModeChange = onModeChange;
+    this.#handleDataChange = onDataChange;
+    this.#eventPointsModel = eventPointsModel;
   }
 
   init(point) {
