@@ -127,6 +127,7 @@ export default class BoardPresenter {
     switch (actionType) {
       case UserAction.UPDATE_POINT:
         this.#eventPointsPresenters.get(updatedPoint.id).setSaving();
+        this.#toggleNewEventButton(false);
         try {
           await this.#eventPointsModel.updatePoint(updateType, updatedPoint);
         } catch (err) {
