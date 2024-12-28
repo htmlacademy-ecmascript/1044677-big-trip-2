@@ -16,7 +16,7 @@ export default class TripInfoPresenter {
   }
 
   #tripTitleData(points) {
-    const sortedPoints = [...points].sort((a, b) => a.dateFrom - b.dateFrom);
+    const sortedPoints = [...points].sort((currentPoint, nextPoint) => currentPoint.dateFrom - nextPoint.dateFrom);
     const firstPoint = sortedPoints[0];
     const lastPoint = sortedPoints[sortedPoints.length - 1];
 
@@ -38,7 +38,7 @@ export default class TripInfoPresenter {
   }
 
   #tripDates(points) {
-    const sortedPoints = [...points].sort((a, b) => a.dateFrom - b.dateFrom);
+    const sortedPoints = [...points].sort((currentPoint, nextPoint) => currentPoint.dateFrom - nextPoint.dateFrom);
     if (points.length === 0) {
       return {
         startDate: null,

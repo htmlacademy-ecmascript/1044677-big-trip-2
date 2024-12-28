@@ -14,9 +14,9 @@ function createTypeTemplate(type) {
   );
 }
 
-function createOfferTemplate(offer, checkedOffer, isDisabled) {
+function createOfferTemplate(offer, checkedOffers, isDisabled) {
   const {id, title, price} = offer;
-  const isChecked = checkedOffer.map((item) => item.id).includes(id) ? 'checked' : '';
+  const isChecked = checkedOffers.map((item) => item.id).includes(id) ? 'checked' : '';
   return (
     `<div class="event__offer-selector">
       <input class="event__offer-checkbox  visually-hidden"

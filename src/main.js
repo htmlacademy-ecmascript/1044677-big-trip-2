@@ -1,4 +1,4 @@
-import FilterModel from './model/filters-model.js';
+import FiltersModel from './model/filters-model.js';
 import {AUTHORIZATION, END_POINT} from './const.js';
 import BoardPresenter from './presenter/board-presenter.js';
 import EventPointsModel from './model/event-points-model.js';
@@ -6,13 +6,13 @@ import FilterPresenter from './presenter/filter-presenter.js';
 import EventPointsApiService from './event-points-api-service.js';
 
 const siteHeaderElement = document.querySelector('.page-header');
-const siteHeaderTripControls = siteHeaderElement.querySelector('.trip-controls__filters');
 const tripEventsElement = document.querySelector('.trip-events');
+const siteHeaderTripControls = siteHeaderElement.querySelector('.trip-controls__filters');
 
 const eventPointsModel = new EventPointsModel({
   eventPointsApiService: new EventPointsApiService(END_POINT, AUTHORIZATION),
 });
-const filterModel = new FilterModel();
+const filterModel = new FiltersModel();
 
 const filterPresenter = new FilterPresenter({
   filterContainer: siteHeaderTripControls,
